@@ -1,4 +1,4 @@
-fuel-plugin-vmware-dvs
+fuel-plugin-manila
 ============
 
 Plugin description

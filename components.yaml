@@ -4,9 +4,9 @@
 # - https://blueprints.launchpad.net/fuel/+spec/component-registry
 # - https://specs.openstack.org/openstack/fuel-specs/specs/8.0/component-registry.html
 
-- name: additional_service:fuel-plugin-vmware-dvs
+- name: additional_service:fuel-plugin-manila
   compatible: []
   requires: []
   incompatible: []
-  label: "Plugin label, that will be shown on UI"
-  description: "Component description (optional)"
+  label: "Manila Plugin label, that will be shown on UI"
+  description: "Manila is the Shared Network As A Service project"

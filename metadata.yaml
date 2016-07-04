@@ -1,23 +1,23 @@
 # Plugin name
-name: fuel-plugin-vmware-dvs
+name: fuel-plugin-manila
 # Human-readable name for your plugin
-title: Title for fuel-plugin-vmware-dvs plugin
+title: Title for fuel-plugin-manila plugin
 # Plugin version
 version: '1.0.0'
 # Description
 description: Please describe your plugin here
 # Required fuel version
-fuel_version: ['8.0']
+fuel_version: ['9.0']
 # Specify license of your plugin
 licenses: ['Apache License Version 2.0']
 # Specify author or company name
-authors: ['Specify author or company name']
+authors: ['Mirantis']
 # A link to the plugin's page
-homepage: 'https://github.com/openstack/fuel-plugins'
+homepage: 'https://github.com/igajsin/manila-plugin'
 # Specify a group which your plugin implements, possible options:
 # network, storage, storage::cinder, storage::glance, hypervisor,
 # equipment
-groups: []
+groups: ['storage']
 # Change `false` to `true` if the plugin can be installed in the environment
 # after the deployment.
 is_hotpluggable: false

@@ -1,4 +1,4 @@
-fuel-plugin-vmware-dvs_role:
+fuel-plugin-manila_role:
   # Role name
   name: "Set here the name for the role. This name will be displayed in the Fuel web UI"
   # Role description
