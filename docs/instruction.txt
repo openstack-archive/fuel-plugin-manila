@@ -1,0 +1,293 @@
+openstack user create  manila --password manila
+
+openstack role add --user manila --project services admin
+
+openstack service create --name manila --description "OpenStack Shared Filesystems" share
+
+openstack service create --name manilav2 --description "OpenStack Shared Filesystems" sharev2
+
+# repeat add user
+openstack user create --password manila manila
+openstack role add --project admin --user manila admin
+openstack role add --project services --user manila admin
+#
+
+public ip 10.109.8.3
+management/admin 10.109.6.3
+все ip 10.109.6.3
+
+myssql root lA8IijEzVljUy9pRuS87O1MQ
+
+-publicurl http://%controller%:8786/v1/%\(tenant_id\)s \
+
+
+cat /etc/haproxy/conf.d/071-manila-api.cfg
+
+listen manila-api
+  bind 10.109.6.3:8786
+  bind 10.109.8.3:8786
+  http-request  set-header X-Forwarded-Proto https if { ssl_fc }
+  option  httpchk
+  option  httplog
+  option  httpclose
+  server node-1 10.109.6.4:8786  check inter 10s fastinter 2s downinter 3s rise 3 fall 3
+
+
+ openstack endpoint create \
+    --region RegionOne \
+    --publicurl http://10.109.8.3:8786/v1/%\(tenant_id\)s \
+    --internalurl http://10.109.6.3:8786/v1/%\(tenant_id\)s \
+    --adminurl http://10.109.6.3:8786/v1/%\(tenant_id\)s \
+    share
+
+
+ openstack endpoint create \
+    --region RegionOne \
+    --publicurl http://10.109.8.3:8786/v2/%\(tenant_id\)s \
+    --internalurl http://10.109.6.3:8786/v2/%\(tenant_id\)s \
+    --adminurl http://10.109.6.3:8786/v2/%\(tenant_id\)s \
+    sharev2
+
+==== exp
+
+
+
+ openstack endpoint create \
+    --region RegionOne \
+    --publicurl http://10.109.8.4:8786/v1/%\(tenant_id\)s \
+    --internalurl http://10.109.8.4:8786/v1/%\(tenant_id\)s \
+    --adminurl http://10.109.8.4:8786/v1/%\(tenant_id\)s \
+    share
+
+ openstack endpoint create \
+    --region RegionOne \
+    --publicurl http://10.109.8.4:8786/v2/%\(tenant_id\)s \
+    --internalurl http://10.109.8.4:8786/v2/%\(tenant_id\)s \
+    --adminurl http://10.109.8.4:8786/v2/%\(tenant_id\)s \
+    sharev2
+
+openstack service create --name novav2 --description "Openstack Compute Service v2" computev2
+
+ openstack endpoint create \
+    --region RegionOne \
+    --publicurl http://10.109.8.3:8774/v2.1 \
+    --internalurl http://10.109.6.3:8774/v2.1 \
+    --adminurl http://10.109.6.3:8774/v2.1 \
+    novav2
+
+
+
+
+curl -i \
+  -H "Content-Type: application/json" \
+  -d '
+{
+    "auth": {
+        "identity": {
+            "methods": [
+                "password"
+            ],
+            "password": {
+                "user": {
+                    "name": "manila",
+                    "domain": {
+                        "id": "default"
+                    },
+                    "password": "manila"
+                }
+            }
+        }
+    }
+}' \
+  http://10.109.6.3:5000/v3/auth/tokens; echo
+
+  stack@ubuntu:~/devstack$ openstack endpoint show nova
++--------------+----------------------------------+
+| Field        | Value                            |
++--------------+----------------------------------+
+| adminurl     | http://10.109.0.4:8774/v2.1      |
+| enabled      | True                             |
+| id           | 611a2c81e3144d82b1a16c8e02074596 |
+| internalurl  | http://10.109.0.4:8774/v2.1      |
+| publicurl    | http://10.109.0.4:8774/v2.1      |
+| region       | RegionOne                        |
+| service_id   | 248f75021a284a80958dd193c9cb0120 |
+| service_name | nova                             |
+| service_type | compute                          |
+
+root@node-1:~# openstack endpoint show novav2
++--------------+----------------------------------+
+| Field        | Value                            |
++--------------+----------------------------------+
+| adminurl     | http://10.109.6.3:8774/v2.1      |
+| enabled      | True                             |
+| id           | 5497610850924e4b84836d45e1af507f |
+| internalurl  | http://10.109.6.3:8774/v2.1      |
+| publicurl    | http://10.109.8.3:8774/v2.1      |
+| region       | RegionOne                        |
+| service_id   | b6e0ef86a9c14cd9b23637d5ac23709c |
+| service_name | novav2                           |
+| service_type | computev2                        |
++--------------+----------------------------------+
+
+=================================================
+Second attempt
+
+#+BEGIN_SRC sh
+
+
+root@node-1:~# . openrc
+root@node-1:~# apt-get install git python-pip
+root@node-1:~# git clone -b stable/mitaka https://github.com/openstack/manila
+root@node-1:~# cd manila
+root@node-1:~/manila# python setup.py install
+root@node-1:~/manila# pip install python-manilaclient>=1.8.1
+root@node-1:~/manila# openstack user create  manila --password manila
+root@node-1:~/manila# openstack role add --user manila --project services admin
+root@node-1:~/manila# openstack service create --name manila --description "OpenStack Shared Filesystems" share
+root@node-1:~/manila# openstack service create --name manilav2 --description "OpenStack Shared Filesystems" sharev2
+root@node-1:~/manila# export adminurl=$(openstack endpoint show cinder| awk '/adminurl/ {print $4}'|cut -d':' -f2|sed s/'\/'//g)
+root@node-1:~/manila# export internalurl=$(openstack endpoint show cinder| awk '/internalurl/ {print $4}'|cut -d':' -f2|sed s/'\/'//g)
+root@node-1:~/manila# export publicurl=$(openstack endpoint show cinder| awk '/publicurl/ {print $4}'|cut -d':' -f2|sed s/'\/'//g)
+root@node-1:~/manila# openstack endpoint create \
+    --region RegionOne \
+    --publicurl http://$publicurl:8786/v1/%\(tenant_id\)s \
+    --internalurl http://$internalurl:8786/v1/%\(tenant_id\)s \
+    --adminurl http://$adminurl:8786/v1/%\(tenant_id\)s \
+    share
+root@node-1:~/manila# openstack endpoint create \
+    --region RegionOne \
+    --publicurl http://$publicurl:8786/v2/%\(tenant_id\)s \
+    --internalurl http://$internalurl:8786/v2/%\(tenant_id\)s \
+    --adminurl http://$adminurl:8786/v2/%\(tenant_id\)s \
+    sharev2
+root@node-1:~/manila# cp -r etc/manila/ /etc
+root@node-1:~/manila# apt-get install python-dev python-tox libpq-dev libffi-dev
+root@node-1:~/manila# tox -e genconfig
+root@node-1:~/manila# cp etc/manila/manila.conf.sample /etc/manila/manila.conf
+root@node-1:~/manila# mysql -uroot -ppass
+mysql> create user manila@localhost IDENTIFIED BY 'manila';
+mysql> create user manila@'%' IDENTIFIED BY 'manila';
+mysql> CREATE DATABASE manila CHARACTER SET utf8;
+mysql> grant all privileges on manila.* to manila@localhost;
+mysql> grant all privileges on manila.* to manila@'%';
+mysql> FLUSH PRIVILEGES;
+root@node-1:~/manila# mkdir /var/lib/manila; mkdir /var/lib/manila/data; mkdir /var/lib/manila/tmp; mkdir /var/log/manila
+root@node-1:~/manila# emacs /etc/manila.conf and do some configuration. As examle
+[DEFAULT]
+api_paste_config = /etc/manila/api-paste.ini
+state_path = /var/lib/manila
+osapi_share_extension = manila.api.contrib.standard_extensions
+default_share_type = default_share_type
+rootwrap_config = /etc/manila/rootwrap.conf
+auth_strategy = keystone
+enabled_share_backends = london
+enabled_share_protocols = NFS,CIFS
+share_name_template = share-%s
+scheduler_driver = manila.scheduler.drivers.filter.FilterScheduler
+debug = true
+logging_context_format_string = %(asctime)s.%(msecs)d %(color)s%(levelname)s %(name)s %(request_id)s %(user_id)s %(project_id)s%(color)s] %(instance)s%(color)s%(message)s
+logging_default_format_string = %(asctime)s.%(msecs)d %(color)s%(levelname)s %(name)s -%(color)s %(instance)s%(color)s%(message)s
+logging_debug_format_suffix = from (pid=%(process)d) %(funcName)s %(pathname)s:%(lineno)d
+logging_exception_prefix = %(color)s%(asctime)s.%(msecs)d TRACE %(name)s %(instance)s
+rpc_backend = rabbit
+[cinder]
+auth_url = http://10.109.1.3:35357/
+auth_type = password
+password = cFZitpwOM22hCs8YoCLeH6MQ
+project_domain_id = default
+project_name = services
+user_domain_id = default
+username = cinder
+[cors]
+[cors.subdomain]
+[database]
+connection = mysql+pymysql://manila:manila@10.109.1.3/manila?charset=utf8
+[keystone_authtoken]
+auth_uri = http://10.109.1.3:5000/
+signing_dir = /tmp/keystone-signing-manila
+memcached_servers = 10.109.1.4:11211
+admin_password=manila
+admin_tenant_name=services
+identity_uri=http://10.109.1.3:5000/
+admin_user=manila
+signing_dirname=/tmp/keystone-signing-manila
+[matchmaker_redis]
+[neutron]
+auth_url = http://10.109.1.3:35357/
+auth_type = password
+password=bq5QOEPgvT1ecdudDe6KMbuO
+project_domain_id = default
+project_domain_name=Default
+project_name = services
+user_domain_id = default
+username = neutron
+[nova]
+auth_url = http://10.109.1.3:35357/
+auth_type = password
+password = 5CJaEKPzeuCgP29D000DTo7p
+project_domain_id = default
+project_name = services
+user_domain_id = default
+username = nova
+[oslo_concurrency]
+lock_path = /var/lib/manila/tmp
+[oslo_messaging_amqp]
+[oslo_messaging_notifications]
+[oslo_messaging_rabbit]
+amqp_durable_queues = False
+rabbit_hosts = 10.109.1.4:5673
+rabbit_use_ssl = False
+rabbit_userid = nova
+rabbit_password = VmwPkVBf0vdBmZsc8jKIumsa
+rabbit_virtual_host = /
+rabbit_ha_queues = True
+heartbeat_rate = 2
+[oslo_middleware]
+[oslo_policy]
+[london]
+share_driver = manila.share.drivers.generic.GenericShareDriver
+driver_handles_share_servers = True
+service_instance_password = manila
+service_instance_user = manila
+service_image_name = manila-service-image
+path_to_private_key = /root/.ssh/id_rsa
+path_to_public_key = /root/.ssh/id_rsa.pub
+share_backend_name = LONDON
+
+root@node-1:~/manila# ssh-keygen -t rsa
+root@node-1:~/manila# manila-manage db sync
+root@node-1:~/manila# emacs /etc/haproxy/conf.d/071-manila-api.cfg like
+listen manila-api
+  bind 10.109.1.3:8786 #b_management ip
+  bind 10.109.3.3:8786 #b_public ip
+  http-request  set-header X-Forwarded-Proto https if { ssl_fc }
+  option  httpchk
+  option  httplog
+  option  httpclose
+  server node-1 10.109.1.4:8786  check inter 10s fastinter 2s downinter 3s rise 3 fall 3 # br-mgmt ip
+root@node-1:~/manila# crm resource restart p_haproxy
+root@node-1:~/manila# iptables -A INPUT -p tcp -m multiport --ports 8786 -m comment --comment "8786 manila-api" -j ACCEPT
+root@node-1:~/manila# manila-api --config-file /etc/manila/manila.conf 2>&1 | tee /var/log/manila/manila-api.log
+root@node-1:~/manila# manila type-create default_share_type True
+root@node-1:~/manila# manila-scheduler --config-file /etc/manila/manila.conf 2>&1 | tee /var/log/manila/manila-scheduler.log
+root@node-1:~/manila# manila-share --config-file /etc/manila/manila.conf 2>&1 | tee /var/log/manila/manila-share.log
+root@node-1:~/manila# manila-data --config-file /etc/manila/manila.conf 2>&1 | tee /var/log/manila/manila-data.log
+root@node-1:~/manila# export net_uid=$(neutron net-list|grep internal|cut -f2 -d' ')
+root@node-1:~/manila# export subnet_uid=$(neutron net-list|grep internal|cut -f6 -d' ')
+root@node-1:~/manila# manila share-network-create \
+    --name test_share_network \
+    --neutron-net-id $net_uid \
+    --neutron-subnet-id $subnet_uid
+root@node-1:~/manila# cd ~
+root@node-1:~# git clone https://github.com/openstack/manila-image-elements.git
+root@node-1:~/manila-image-elements# apt-get install debootstrap
+root@node-1:~/manila-image-elements# tox -e buildimage
+root@node-1:~/manila-image-elements# glance image-create --name manila-service-image\
+    --container-format bare --disk-format qcow2 --file ./manila-service-image.qcow2 --visibility public
+root@node-1:~/manila-image-elements# openstack flavor create manila-service-flavor --id 100 --ram 256 --disk 0 --vcpus 1
+root@node-1:~/manila-image-elements# manila create NFS 1 --name testshare --share-network test_share_network
+root@node-1:~/manila-image-elements#
+root@node-1:~/manila-image-elements#
+
+#+END_SRC
