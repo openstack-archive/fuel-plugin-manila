@@ -1,0 +1,2 @@
+1. openstack user create  manila --password manila
+   done

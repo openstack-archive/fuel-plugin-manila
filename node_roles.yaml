@@ -1,8 +1,8 @@
 fuel-plugin-manila_role:
   # Role name
-  name: "Set here the name for the role. This name will be displayed in the Fuel web UI"
+  name: "Manila pomanila"
   # Role description
-  description: "Write description for your role"
+  description: "Desc of the manila role"
   # If primary then during orchestration this role will be
   # separated into primary-role and role
   has_primary: false

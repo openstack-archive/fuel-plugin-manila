@@ -1,0 +1,13 @@
+Steps for installation and configuration of the manila:
+* Installation
+* Configuration
+** DONE create user
+   openstack user create  manila --password manila
+   openstack role add --user manila --project services admin
+** DONE create service
+   openstack service create --name manila --description "OpenStack Shared Filesystems" share
+   openstack service create --name manilav2 --description "OpenStack Shared Filesystems" sharev2
+** TODO create endpoint
+* Notest
+** Receive the puppet-manila module when the plugin is bulded
+** How to generate password in puppet?
