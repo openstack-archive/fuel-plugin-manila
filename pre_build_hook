@@ -4,6 +4,4 @@
 # like packages building, packages downloading from mirrors and so on.
 # The script should return 0 if there were no errors.
 
-cd deployment_scripts/puppet/modules/puppet-manila && git pull || \
-cd deployment_scripts/puppet/modules; \
-git clone -b stable/mitaka https://github.com/openstack/puppet-manila.git
+git submodule update --remote deployment_scripts/puppet/modules/puppet-manila
