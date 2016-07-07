@@ -1,0 +1,4 @@
+[submodule "deployment_scripts/puppet/modules/manila"]
+	path = deployment_scripts/puppet/modules/manila
+	url = https://github.com/openstack/puppet-manila.git
+	branch = stable/mitaka
