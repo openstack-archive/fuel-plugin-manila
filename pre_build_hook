@@ -4,4 +4,4 @@
 # like packages building, packages downloading from mirrors and so on.
 # The script should return 0 if there were no errors.
 
-git submodule update --remote deployment_scripts/puppet/modules/puppet-manila
+git submodule update --remote deployment_scripts/puppet/modules/manila
