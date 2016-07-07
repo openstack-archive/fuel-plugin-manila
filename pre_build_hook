@@ -1,7 +1,21 @@
 #!/bin/bash
 
-# Add here any the actions which are required before plugin build
-# like packages building, packages downloading from mirrors and so on.
-# The script should return 0 if there were no errors.
-
+# update submodules for core puppet manifests
 git submodule update --remote deployment_scripts/puppet/modules/manila
+
+# build the deb for manila project
+curdir=$(pwd)
+tmpdir=$(mktemp -d); cd $tmpdir
+
+git clone --depth 1 -b stable/mitaka https://github.com/openstack/manila.git
+fpm -s python -t deb manila/setup.py
+
+git clone --depth 1 -b stable/mitaka https://github.com/openstack/python-manilaclient.git
+fpm -s python -t deb python-manilaclient/setup.py
+
+git clone --depth 1 -b stable/mitaka https://github.com/openstack/manila-ui.git
+fpm -s python -t deb manila-ui/setup.py
+
+cp *.deb $curdir/repositories/ubuntu
+cd .. ; rm -rf $tmpdir
+
