@@ -24,9 +24,10 @@ Steps for installation and configuration of the manila:
     --adminurl http://$adminurl:8786/v2/%\(tenant_id\)s \
     sharev2
 ** TODO install manila
+** TODO make /var/log and init files
 ** TODO edit config
 ** TODO do db staff
 ** TODO iptables
 * Notest
 ** Receive the puppet-manila module when the plugin is bulded
-** How to generate password in puppet?
+** DONE How to generate password in puppet?

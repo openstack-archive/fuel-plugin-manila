@@ -1,7 +1,7 @@
 - id: manila-start
   type: puppet
-  role: [primary-controller, controller]
-  version: 2.0.0
+  groups: [primary-controller, controller]
+  version: 2.1.0
   cross-depends:
     - name: deploy_start
   cross-depended-by:
@@ -13,8 +13,8 @@
 
 - id: manila-hiera
   type: puppet
-  role: [primary-controller, controller]
-  version: 2.0.0
+  groups: [primary-controller, controller]
+  version: 2.1.0
   cross-depends:
     - name: manila-start
   cross-depended-by:
@@ -26,8 +26,8 @@
 
 - id: manila-keystone
   type: puppet
-  role: [primary-controller, controller]
-  version: 2.0.0
+  groups: [primary-controller, controller]
+  version: 2.1.0
   cross-depends:
     - name: manila-hiera
   cross-depended-by:
@@ -37,3 +37,15 @@
     puppet_modules: "."
     timeout: 3600
     
+- id: manila-main
+  type: puppet
+  groups: [primary-controller, controller]
+  version: 2.1.0
+  cross-depends:
+    - name: manila-kestone
+  cross-depended-by:
+    - name: deploy_end
+  parameters:
+    puppet_manifest: "puppet/manifests/install.pp"
+    puppet_modules: "."
+    timeout: 3600
