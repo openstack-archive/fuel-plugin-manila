@@ -1,4 +1,4 @@
-notify {'MODULAR manila/keystone': }
+notify {'MODULAR fuel-plugin-manila/keystone': }
 
 $manila           = hiera_hash('manila', {})
 $pass             = $manila['user_password']

@@ -15,6 +15,8 @@
   type: puppet
   groups: [primary-controller, controller]
   version: 2.1.0
+  requires: [hiera]
+  required_for: [manila-keystone]
   cross-depends:
     - name: manila-start
   cross-depended-by:
@@ -28,6 +30,8 @@
   type: puppet
   groups: [primary-controller, controller]
   version: 2.1.0
+  requires: [manila-hiera]
+  required_for: [manila-db]
   cross-depends:
     - name: manila-hiera
   cross-depended-by:
@@ -37,12 +41,30 @@
     puppet_modules: "puppet/modules:/etc/puppet/modules"
     timeout: 3600
 
+- id: manila-db
+  type: puppet
+  groups: [primary-controller]
+  version: 2.1.0
+  required_for: [manila-main]
+  requires: [primary-database, database, manila-hiera]
+  condition:
+    yaql_exp: >
+      changedAny($.mysql, $.network_metadata.vips, $.get('database_vip'))
+  cross-depends:
+    - name: /^(primary-)?database$/
+  cross-depended-by:
+    - name: deploy_end
+  parameters:
+    puppet_manifest: "puppet/manifests/db.pp"
+    puppet_modules: "puppet/modules:/etc/puppet/modules"
+    timeout: 3600
+
 - id: manila-main
   type: puppet
   groups: [primary-controller, controller]
   version: 2.1.0
   cross-depends:
-    - name: manila-kestone
+    - name: manila-db
   cross-depended-by:
     - name: deploy_end
   parameters:
