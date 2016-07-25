@@ -21,7 +21,7 @@
     - name: deploy_end
   parameters:
     puppet_manifest: "puppet/manifests/populate_hiera.pp"
-    puppet_modules: "."
+    puppet_modules: "puppet/modules:/etc/puppet/modules"
     timeout: 3600
 
 - id: manila-keystone
@@ -33,10 +33,10 @@
   cross-depended-by:
     - name: deploy_end
   parameters:
-    puppet_manifest: "puppet/manifests/populate_hiera.pp"
-    puppet_modules: "."
+    puppet_manifest: "puppet/manifests/keystone.pp"
+    puppet_modules: "puppet/modules:/etc/puppet/modules"
     timeout: 3600
-    
+
 - id: manila-main
   type: puppet
   groups: [primary-controller, controller]
@@ -46,6 +46,6 @@
   cross-depended-by:
     - name: deploy_end
   parameters:
-    puppet_manifest: "puppet/manifests/install.pp"
-    puppet_modules: "."
+    puppet_manifest: "puppet/manifests/site.pp"
+    puppet_modules: "puppet/modules:/etc/puppet/modules"
     timeout: 3600
