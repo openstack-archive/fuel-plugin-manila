@@ -3,7 +3,7 @@ name: fuel-plugin-manila
 # Human-readable name for your plugin
 title: Title for fuel-plugin-manila plugin
 # Plugin version
-version: '1.0.2'
+version: '1.0.5'
 # Description
 description: Please describe your plugin here
 # Required fuel version

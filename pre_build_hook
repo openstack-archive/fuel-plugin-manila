@@ -3,19 +3,16 @@
 # update submodules for core puppet manifests
 git submodule update --remote deployment_scripts/puppet/modules/manila
 
-# build the deb for manila project
-curdir=$(pwd)
-tmpdir=$(mktemp -d); cd $tmpdir
+function build_deb {
+    fpm -v $1 -s python -t deb --python-install-bin /usr/bin --python-install-lib /usr/lib/python2.7/dist-packages/ $2/setup.py
+}
 
-git clone --depth 1 -b stable/mitaka https://github.com/openstack/manila.git
-fpm -s python -t deb --python-install-bin /usr/bin  --python-install-lib /usr/lib/python2.7/dist-packages/ manila/setup.py
 
-git clone --depth 1 -b stable/mitaka https://github.com/openstack/python-manilaclient.git
-fpm -s python -t deb python-manilaclient/setup.py
+rm repositories/ubuntu/*
+cd repositories/python
 
-git clone --depth 1 -b stable/mitaka https://github.com/openstack/manila-ui.git
-fpm -s python -t deb manila-ui/setup.py
+build_deb 2.1.1 manila-ui
+build_deb "1:2.0.1" manila
+build_deb 1.8.2 python-manilaclient
 
-cp *.deb $curdir/repositories/ubuntu
-cd .. ; rm -rf $tmpdir
-
+mv *.deb ../ubuntu

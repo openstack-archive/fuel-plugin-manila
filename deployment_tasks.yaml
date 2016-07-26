@@ -59,6 +59,19 @@
     puppet_modules: "puppet/modules:/etc/puppet/modules"
     timeout: 3600
 
+- id: manila-install
+  type: puppet
+  groups: [primary-controller, controller]
+  version: 2.1.0
+  required_for: [manila-main]
+  requires: [manila-db]
+  parameters:
+    puppet_manifest: "puppet/manifests/install.pp"
+    puppet_modules: "puppet/modules:/etc/puppet/modules"
+    timeout: 3600
+
+
+
 - id: manila-main
   type: puppet
   groups: [primary-controller, controller]

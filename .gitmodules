@@ -2,3 +2,12 @@
 	path = deployment_scripts/puppet/modules/manila
 	url = https://github.com/openstack/puppet-manila.git
 	branch = stable/mitaka
+[submodule "repositories/python/manila-ui"]
+	path = repositories/python/manila-ui
+	url = https://github.com/openstack/manila-ui.git
+[submodule "repositories/python/python-manilaclient"]
+	path = repositories/python/python-manilaclient
+	url = https://github.com/openstack/python-manilaclient.git
+[submodule "repositories/python/manila"]
+	path = repositories/python/manila
+	url = https://github.com/openstack/manila.git
