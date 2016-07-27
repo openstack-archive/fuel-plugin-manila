@@ -1,7 +1,6 @@
 ********************************
 Test Plan for Manila Fuel plugin
 ********************************
- 
 
 Table of contents
 ==================
@@ -28,7 +27,7 @@ This document describes Master Test Plan for Manila  Fuel Plugin. The scope of t
  - outline testing approach, test types, test cycles that will be used;
  - test mission;
  - deliverables;
- 
+
 1.2.Intended Audience
 ---------------------
 This document is intended for Manila  project team staff (QA and Dev engineers and managers) all other persons who are interested in testing results.
@@ -45,19 +44,18 @@ The Fuel Manila plugin adds utilization the corresponding OpenStack service in a
 ----------------------------
 - Lab environment deployment.
 - Deploy MOS with developed plugin installed.
-- Create and run specific tests for plugin/deployment.	
+- Create and run specific tests for plugin/deployment.
 - Documentation
 
 2.2. Test items
 ---------------
-	
+
 - Manila UI;
 - Fuel CLI;
 - Fuel API;
 - Fuel UI;
 - MOS UI;
 - MOS API.
-
 
 .. _approach:
 
@@ -120,17 +118,16 @@ Project testing activities are to be resulted in the following reporting documen
  1. Deploy cluster with Manila  plugin enabled.
  2. TBD
 
-
 .. _structure:
 
 Test Cycle Structure
 ====================
- 
+
 An ordinary test cycle for each iteration consists of the following steps:
  - Smoke testing of each build ready for testing;	
  - Verification testing of each build ready for testing;
  - Regression testing cycles in the end of iteration;
- - Creation of a new test case for covering of a new found bug (if such test 	does not exist).
+ - Creation of a new test case for covering of a new found bug (if such test does not exist).
 
 5.1.1 Smoke Testing
 -------------------
