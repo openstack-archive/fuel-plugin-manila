@@ -21,4 +21,6 @@ package {'python-manila-ui':
   ensure => 'installed'
 }
 
+class{'::manila_auxiliary::fs': }
+
 Package['python-pip']->Package['pycrypto']->Package['python-manila']->Package['python-manilaclient']->Package['python-manila-ui']
