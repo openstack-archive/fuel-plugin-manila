@@ -42,7 +42,6 @@
 #
 # Copyright 2016 Your name here, unless otherwise noted.
 #
-class manila_auxiliary {
 
-
+class manila_auxiliary () {
 }

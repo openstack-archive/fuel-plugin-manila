@@ -1,26 +1,47 @@
 class manila_auxiliary::fs () {
+
+  user {'manila':
+    ensure => 'present',
+    system => true,
+  }->
   file {'/etc/manila':
     ensure => 'directory',
+    owner  => 'manila',
+    group  => 'manila',
   }->
   file {'/etc/manila/rootwrap.d':
     ensure => 'directory',
+    owner  => 'manila',
+    group  => 'manila',
   }
   file { '/var/log/manila':
     ensure => 'directory',
+    owner  => 'manila',
+    group  => 'manila',
   }
   file {'/etc/manila/api-paste.ini':
-    source => "puppet:///modules/manila_auxiliary/api-paste.ini",
+    source => 'puppet:///modules/manila_auxiliary/api-paste.ini',
+    owner  => 'manila',
+    group  => 'manila',
   }
   file {'/etc/manila/logging_sample.conf':
-    source => "puppet:///modules/manila_auxiliary/logging_sample.conf",
+    source => 'puppet:///modules/manila_auxiliary/logging_sample.conf',
+    owner  => 'manila',
+    group  => 'manila',
   }
   file {'/etc/manila/policy.json':
-    source => "puppet:///modules/manila_auxiliary/policy.json",
+    source => 'puppet:///modules/manila_auxiliary/policy.json',
+    owner  => 'manila',
+    group  => 'manila',
   }
   file {'/etc/manila/rootwrap.conf':
-    source => "puppet:///modules/manila_auxiliary/rootwrap.conf",
+    source => 'puppet:///modules/manila_auxiliary/rootwrap.conf',
+    owner  => 'manila',
+    group  => 'manila',
   }
   file {'/etc/manila/rootwrap.d/share.filters':
-    source => "puppet:///modules/manila_auxiliary/share.filters"
+    source => 'puppet:///modules/manila_auxiliary/share.filters',
+    owner  => 'manila',
+    group  => 'manila',
   }
 }
