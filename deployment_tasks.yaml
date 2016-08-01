@@ -70,7 +70,15 @@
     puppet_modules: "puppet/modules:/etc/puppet/modules"
     timeout: 3600
 
-
+- id: manila-haproxy
+  type: puppet
+  groups: [primary-controller, controller]
+  version: 2.1.0
+  requires: [manila-install]
+  parameters:
+    puppet_manifest: "puppet/manifest/haproxy.pp"
+    puppet_modules: "puppet/modules:/etc/puppet/modules"
+    timeout: 3600
 
 - id: manila-main
   type: puppet
@@ -80,6 +88,7 @@
     - name: manila-db
   cross-depended-by:
     - name: deploy_end
+  requires: [manila-install, manila-haproxy]
   parameters:
     puppet_manifest: "puppet/manifests/site.pp"
     puppet_modules: "puppet/modules:/etc/puppet/modules"
