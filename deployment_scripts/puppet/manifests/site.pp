@@ -82,7 +82,7 @@ class {'::manila::compute::nova':
 }
 
 class {'::manila::backends':
- enabled_share_backends => 'generic',
+ enabled_share_backends => ['generic'],
 }
 
 $gen = {'generic' =>
