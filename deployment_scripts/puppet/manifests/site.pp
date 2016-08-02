@@ -92,3 +92,10 @@ $gen = {'generic' =>
 }
 
 create_resources('::manila::backend::generic', $gen)
+
+class {'::manila::scheduler':
+  scheduler_driver => 'manila.scheduler.drivers.filter.FilterScheduler',
+  package_ensure   => 'absent',
+  enabled          => true,
+  manage_service   => true,
+}
