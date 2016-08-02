@@ -2,6 +2,8 @@ class manila_auxiliary::fs () {
 
   user {'manila':
     ensure => 'present',
+    home   => '/var/lib/manila',
+    shell  => '/bin/bash',
     system => true,
   }->
   file {'/etc/manila':

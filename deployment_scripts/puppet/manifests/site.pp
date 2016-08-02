@@ -55,14 +55,6 @@ class {'::manila':
   log_facility    => 'LOG_LOCAL4',
 }
 
-class {'::manila::api':
-  keystone_password  => $manila['user_password'],
-  keystone_auth_host => $mgmt_ip,
-  package_ensure     => 'absent',
-  enabled            => false,
-  manage_service     => false,
-}
-
 class {'::manila::quota':
 }
 
@@ -82,20 +74,39 @@ class {'::manila::compute::nova':
 }
 
 class {'::manila::backends':
- enabled_share_backends => ['generic'],
+  enabled_share_backends => ['generic'],
 }
 
 $gen = {'generic' =>
   {'share_backend_name' => 'generic',
-   'driver_handles_share_servers' => 'true',
+    'driver_handles_share_servers' => 'true',
   }
 }
 
 create_resources('::manila::backend::generic', $gen)
+
+exec { 'manual_db_sync':
+  command => $::manila::params::db_sync_command,
+  path    => '/usr/bin',
+  user    => 'manila',
+  }->
+class {'::manila::api':
+  keystone_password  => $manila['user_password'],
+  keystone_auth_host => $mgmt_ip,
+  package_ensure     => 'absent',
+  enabled            => true,
+  manage_service     => true,
+}
 
 class {'::manila::scheduler':
   scheduler_driver => 'manila.scheduler.drivers.filter.FilterScheduler',
   package_ensure   => 'absent',
   enabled          => true,
   manage_service   => true,
+}
+
+class {'::manila::share':
+  package_ensure => 'absent',
+  enabled        => true,
+  manage_service => true,
 }
