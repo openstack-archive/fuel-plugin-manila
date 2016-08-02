@@ -11,3 +11,7 @@
 [submodule "repositories/python/manila"]
 	path = repositories/python/manila
 	url = https://github.com/openstack/manila.git
+[submodule "plugin_test/fuel-qa"]
+	path = plugin_test/fuel-qa
+	url = https://github.com/openstack/fuel-qa.git
+	bransh = stable/mitaka
