@@ -7,7 +7,7 @@ class manila_auxiliary::image (
     source => 'puppet:///modules/manila_auxiliary/upload_cirros.rb',
   }->
   exec {'wget_service_image':
-    command => "wget ${src_image} -O /tmp/${image}"
+    command => "wget ${src_image} -O /tmp/${image}",
     path    => '/usr/bin',
   }->
   exec {'upload-service-image':
@@ -15,7 +15,7 @@ class manila_auxiliary::image (
     path    => '/usr/bin',
   }->
   exec {'del_service_image':
-    command => "rm /tmp/${image}",
+    command => "/bin/rm /tmp/${image}",
     path    => '/usr/bin',
   }
 }
