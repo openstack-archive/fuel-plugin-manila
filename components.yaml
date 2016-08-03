@@ -8,5 +8,5 @@
   compatible: []
   requires: []
   incompatible: []
-  label: "Manila Plugin label, that will be shown on UI"
+  label: "Install Manila"
   description: "Manila is the Shared Network As A Service project"
