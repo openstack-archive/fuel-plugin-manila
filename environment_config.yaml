@@ -3,9 +3,9 @@ attributes:
     # Settings group can be one of "general", "security", "compute", "network",
     # "storage", "logging", "openstack_services" and "other".
     group: 'storage'
-  fuel-plugin-manila_text:
-    value: 'Set default value'
-    label: 'Text field'
-    description: 'Description for text field'
+  fuel-plugin-manila_image:
+    value: 'manila-service-image.qcow2'
+    label: 'Image name'
+    description: 'Name of the service image for generic driver'
     weight: 25
     type: "text"

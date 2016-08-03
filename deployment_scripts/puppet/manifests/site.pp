@@ -12,7 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-notify {'MOUDULAR: fuel-plugin-manila/site': }
+notify {'MODULAR: fuel-plugin-manila/site': }
 
 $manila        = hiera_hash('manila', {})
 $db_user       = 'manila'
