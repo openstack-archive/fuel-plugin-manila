@@ -1,5 +1,10 @@
 notify {'MODULAR: fuel-plugin-manila/install': }
 
+$manila = hiera_hash('fuel-plugin-manila', {})
+$image  = manila['fuel-plugin-manila_image']
+
+$master_ip = hiera('master_ip')
+$src_image = "wget http://${master_ip}:8080/plugins/fuel-plugin-manila-1.0/repositories/ubuntu/${image}"
 $inits = {
   'manila-api' => {
     desc => 'manila-api init',
@@ -36,8 +41,12 @@ package {'python-manila-ui':
   ensure => 'installed'
 }
 
-class{'::manila_auxiliary::fs': }
+class {'::manila_auxiliary::fs': }
 
 create_resources('::manila_auxiliary::initd', $inits)
+
+class {'::manila_auxiliary::image':
+  image => $image
+}
 
 Package['python-pip']->Package['pycrypto']->Package['python-manila']->Package['python-manilaclient']->Package['python-manila-ui']
