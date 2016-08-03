@@ -5,8 +5,7 @@ $fpg_manila    = hiera_hash('fuel-plugin-manila', {})
 
 $file          = '/etc/hiera/plugins/fuel-plugin-manila.yaml'
 $new_password  = generate("/bin/bash", "-c", "/bin/date +%s | sha256sum | base64 | head -c 32 ; echo -n")
-sleep 1
-$db_password   = generate("/bin/bash", "-c", "/bin/date +%s | sha256sum | base64 | head -c 32 ; echo -n")
+$db_password   = generate("/bin/bash", "-c", "sleep1; /bin/date +%s | sha256sum | base64 | head -c 32 ; echo -n")
 
 $image_name    = 'manila-service-image'
 $service_image = $fpg_manila['fuel-plugin-manila_image']
