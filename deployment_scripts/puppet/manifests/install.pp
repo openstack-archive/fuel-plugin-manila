@@ -50,4 +50,6 @@ class {'::manila_auxiliary::image':
   image     => $image,
 }
 
+class {'::manila_auxiliary::ssh_keygen': }
+
 Package['python-pip']->Package['pycrypto']->Package['python-manila']->Package['python-manilaclient']->Package['python-manila-ui']

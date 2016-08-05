@@ -20,6 +20,8 @@ $db_pass       = $manila['db_password']
 $db_host       = hiera('database_vip')
 $sql_conn      = "mysql+pymysql://${db_user}:${db_pass}@${db_host}/manila?charset=utf8"
 
+$image         = $manila['service_vm_image']['img_name']
+
 $rabbit_hash   = hiera_hash('rabbit', {})
 $amqp_user     = $rabbit_hash['user']
 $amqp_password = $rabbit_hash['password']
@@ -78,12 +80,18 @@ class {'::manila::backends':
 }
 
 $gen = {'generic' =>
-  {'share_backend_name' => 'generic',
+  {'share_backend_name'            => 'generic',
     'driver_handles_share_servers' => 'true',
+    'share_driver'                 => 'manila.share.drivers.generic.GenericShareDriver',
+    'service_instance_user'        => 'manila',
+    'service_instance_password'    => 'manila',
+    'service_image_name'           => $image,
+    'path_to_private_key'          => '/root/.ssh/id_rsa',
+    'path_to_public_key'           => '/root/.ssh/id_rsa.pub',
   }
 }
 
-create_resources('::manila::backend::generic', $gen)
+create_resources('::manila_auxiliary::backend::generic', $gen)
 
 exec { 'manual_db_sync':
   command => $::manila::params::db_sync_command,
@@ -110,3 +118,5 @@ class {'::manila::share':
   enabled        => true,
   manage_service => true,
 }
+
+class {'::manila_auxiliary::data': }
