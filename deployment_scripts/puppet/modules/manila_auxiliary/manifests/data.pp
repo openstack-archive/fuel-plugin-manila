@@ -1,6 +1,6 @@
 class manila_auxiliary::data () {
   service {'manila-data':
-    ensure => ''running,
+    ensure => 'running',
     name   => 'manila-data',
-}
+  }
 }

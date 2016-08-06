@@ -55,7 +55,10 @@ class {'::manila':
   debug           => $debug,
   use_syslog      => $use_syslog,
   log_facility    => 'LOG_LOCAL4',
-}
+  }->
+  class {'::manila_auxiliary::conf':
+    default_share_type => 'default_share_type',
+  }
 
 class {'::manila::quota':
 }
@@ -93,18 +96,20 @@ $gen = {'generic' =>
 
 create_resources('::manila_auxiliary::backend::generic', $gen)
 
-exec { 'manual_db_sync':
-  command => $::manila::params::db_sync_command,
-  path    => '/usr/bin',
-  user    => 'manila',
-  }->
 class {'::manila::api':
   keystone_password  => $manila['user_password'],
   keystone_auth_host => $mgmt_ip,
   package_ensure     => 'absent',
   enabled            => true,
   manage_service     => true,
-}
+  }->
+  class {'::manila_auxiliary::meta':
+  }->
+  exec { 'manual_db_sync':
+    command => $::manila::params::db_sync_command,
+    path    => '/usr/bin',
+    user    => 'manila',
+  }
 
 class {'::manila::scheduler':
   scheduler_driver => 'manila.scheduler.drivers.filter.FilterScheduler',
