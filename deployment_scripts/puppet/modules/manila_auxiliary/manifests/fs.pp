@@ -16,7 +16,17 @@ class manila_auxiliary::fs () {
     owner  => 'manila',
     group  => 'manila',
   }
-  file { '/var/log/manila':
+  file {'/var/log/manila':
+    ensure => 'directory',
+    owner  => 'manila',
+    group  => 'manila',
+  }
+  file {'/var/lib/manila':
+    ensure => 'directory',
+    owner  => 'manila',
+    group  => 'manila',
+  }->
+  file {'/var/lib/manila/tmp':
     ensure => 'directory',
     owner  => 'manila',
     group  => 'manila',
@@ -38,12 +48,17 @@ class manila_auxiliary::fs () {
   }
   file {'/etc/manila/rootwrap.conf':
     source => 'puppet:///modules/manila_auxiliary/rootwrap.conf',
-    owner  => 'manila',
-    group  => 'manila',
+    owner  => 'root',
+    group  => 'root',
   }
   file {'/etc/manila/rootwrap.d/share.filters':
     source => 'puppet:///modules/manila_auxiliary/share.filters',
-    owner  => 'manila',
-    group  => 'manila',
+    owner  => 'root',
+    group  => 'root',
+  }
+  file {'/etc/sudoers.d/manila-common':
+    source => 'puppet:///modules/manila_auxiliary/manila-common',
+    owner  => 'root',
+    group  => 'root',
   }
 }
