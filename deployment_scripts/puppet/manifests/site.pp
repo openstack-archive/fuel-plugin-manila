@@ -84,3 +84,5 @@ class {'::manila_auxiliary':
 create_resources('::manila_auxiliary::backend::generic', $backends)
 
 class {'::manila_auxiliary::services': }
+
+class {'::manila_auxiliary::ui': }
