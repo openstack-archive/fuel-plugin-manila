@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# update submodules for core puppet manifests
-git submodule update --remote deployment_scripts/puppet/modules/manila
+git submodule update
 
 function build_deb {
     fpm -v $1 -s python -t deb --python-install-bin /usr/bin --python-install-lib /usr/lib/python2.7/dist-packages/ $2/setup.py
@@ -11,8 +10,15 @@ function build_deb {
 rm repositories/ubuntu/*
 cd repositories/python
 
-build_deb 2.1.1 manila-ui
 build_deb "1:2.0.1" manila
+
+sed -i s/'python-keystoneclient'/'#python-keystoneclient'/ manila-ui/requirements.txt
+build_deb 2.1.1 manila-ui
+cd manila-ui; git checkout stable/mitaka; git checkout -- requirements.txt; cd ..
+
+sed -i s/'python-keystoneclient'/'#python-keystoneclient'/ python-manilaclient/requirements.txt
+sed -i s/'pycrypto'/'#pycrypto'/ python-manilaclient/requirements.txt
 build_deb 1.8.2 python-manilaclient
+cd python-manilaclient; git checkout -- requirements.txt; cd ..
 
 mv *.deb ../ubuntu

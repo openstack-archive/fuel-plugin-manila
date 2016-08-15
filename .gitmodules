@@ -5,12 +5,15 @@
 [submodule "repositories/python/manila-ui"]
 	path = repositories/python/manila-ui
 	url = https://github.com/openstack/manila-ui.git
+	branch = stable/mitaka
 [submodule "repositories/python/python-manilaclient"]
 	path = repositories/python/python-manilaclient
 	url = https://github.com/openstack/python-manilaclient.git
+	branch = stable/mitaka
 [submodule "repositories/python/manila"]
 	path = repositories/python/manila
 	url = https://github.com/openstack/manila.git
+	branch = stable/mitaka
 [submodule "plugin_test/fuel-qa"]
 	path = plugin_test/fuel-qa
 	url = https://github.com/openstack/fuel-qa.git
