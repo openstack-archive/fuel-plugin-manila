@@ -17,5 +17,5 @@ define manila_auxiliary::backend::generic (
     "${name}/path_to_private_key":                 value => $path_to_private_key;
     "${name}/path_to_public_key":                  value => $path_to_public_key;
     "${name}/share_backend_name":                  value => $share_backend_name;
-  }
+  }~>Service['manila-share']
 }

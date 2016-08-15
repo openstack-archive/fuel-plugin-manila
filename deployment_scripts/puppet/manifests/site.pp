@@ -79,10 +79,16 @@ class {'::manila_auxiliary':
   nova_pass           => $nova_pass,
   verbose             => $verbose,
   debug               => $debug,
-}
+}->
 
 create_resources('::manila_auxiliary::backend::generic', $backends)
 
 class {'::manila_auxiliary::services': }
 
 class {'::manila_auxiliary::ui': }
+
+class {'::manila_auxiliary::meta': }
+
+Class['::manila_auxiliary']->
+Class['::manila_auxiliary::services']->
+Class['::manila_auxiliary::meta']
