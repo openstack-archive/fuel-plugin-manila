@@ -1,4 +1,3 @@
-
 class manila_auxiliary::image (
   $src_image = 'http://host/manila-service-image.qcow2',
   $image     = 'manila-service-image.qcow2',

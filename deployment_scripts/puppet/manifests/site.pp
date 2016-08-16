@@ -57,10 +57,11 @@ $backends = {'generic' =>
     'service_instance_user'        => 'manila',
     'service_instance_password'    => 'manila',
     'service_image_name'           => $image,
-    'path_to_private_key'          => '/root/.ssh/id_rsa',
-    'path_to_public_key'           => '/root/.ssh/id_rsa.pub',
+    'path_to_private_key'          => '/var/lib/astute/manila/manila',
+    'path_to_public_key'           => '/var/lib/astute/manila/manila.pub',
   }
 }
+
 
 class {'::manila_auxiliary':
   sql_connection      => $sql_conn,
@@ -81,7 +82,6 @@ class {'::manila_auxiliary':
   debug               => $debug,
 }->
 
-create_resources('::manila_auxiliary::backend::generic', $backends)
 
 class {'::manila_auxiliary::services': }
 
@@ -92,3 +92,5 @@ class {'::manila_auxiliary::meta': }
 Class['::manila_auxiliary']->
 Class['::manila_auxiliary::services']->
 Class['::manila_auxiliary::meta']
+
+create_resources('::manila_auxiliary::backend::generic', $backends)

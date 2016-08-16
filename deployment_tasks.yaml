@@ -1,39 +1,65 @@
-- id: manila-start
-  type: puppet
-  groups: [primary-controller, controller]
+- id: manila-generate_keys
+  type: shell
+  groups: [master]
   version: 2.1.0
-  cross-depends:
-    - name: deploy_start
-  cross-depended-by:
-    - name: deploy_end
+  requires: [pre_deployment_start]
+  required_for: [manila-copy_keys]
   parameters:
-    puppet_manifest: "puppet/manifests/notify.pp"
-    puppet_modules: "."
-    timeout: 3600
+    cmd: sh /etc/puppet/modules/osnailyfacter/modular/astute/generate_keys.sh -p /var/lib/fuel/keys/ -i {CLUSTER_ID} -s 'manila'
+    timeout: 180
+
+- id: manila-copy_keys
+  type: copy_files
+  version: 2.1.0
+  role: ['/.*/']
+  required_for: [pre_deployment_end]
+  requires: [manila-generate_keys]
+  cross-depends:
+      - name: manila-generate_keys
+        role: master
+  parameters:
+    files:
+      - src: /var/lib/fuel/keys/{CLUSTER_ID}/manila/manila.pub
+        dst: /var/lib/astute/manila/manila.pub
+      - src: /var/lib/fuel/keys/{CLUSTER_ID}/manila/manila
+        dst: /var/lib/astute/manila/manila
+    permissions: '0600'
+    dir_permissions: '0700'
+
+- id: manila-gen_password
+  type: shell
+  groups: [master]
+  version: 2.1.0
+  requires: [pre_deployment_start]
+  required_for: [manila-hiera]
+  parameters:
+    cmd: sh /var/www/nailgun/plugins/fuel-plugin-manila-1.0/gen_password.sh {CLUSTER_ID}
+    timeout: 180
 
 - id: manila-hiera
-  type: puppet
-  groups: [primary-controller, controller]
+  type: copy_files
   version: 2.1.0
-  requires: [hiera]
+  role: ['/.*/']
   required_for: [manila-keystone]
-  cross-depends:
-    - name: manila-start
-  cross-depended-by:
-    - name: deploy_end
+  requires: [manila-gen_password]
+  cross_depends:
+    - name: manila-gen_password
+      role: master
   parameters:
-    puppet_manifest: "puppet/manifests/populate_hiera.pp"
-    puppet_modules: "puppet/modules:/etc/puppet/modules"
-    timeout: 3600
+    files:
+      - src: /etc/fuel/cluster/{CLUSTER_ID}/fuel-plugin-manila.yaml
+        dst: /etc/hiera/plugins/fuel-plugin-manila.yaml
+    permissions: '0600'
+    dir_permissions: '0700'
 
 - id: manila-keystone
   type: puppet
-  groups: [primary-controller, controller]
+  groups: [primary-controller]
   version: 2.1.0
-  requires: [manila-hiera]
+  requires: [manila-hiera, primary-openstack-controller]
   required_for: [manila-db]
   cross-depends:
-    - name: manila-hiera
+    - name: keystone-db
   cross-depended-by:
     - name: deploy_end
   parameters:
@@ -65,8 +91,21 @@
   version: 2.1.0
   required_for: [manila-main]
   requires: [manila-db]
+  cross-depends:
+     - name: manila-db
   parameters:
     puppet_manifest: "puppet/manifests/install.pp"
+    puppet_modules: "puppet/modules:/etc/puppet/modules"
+    timeout: 3600
+
+- id: manila-image_upload
+  type: puppet
+  groups: [primary-controller]
+  version: 2.1.0
+  required_for: [manila-main]
+  requires: [manila-install]
+  parameters:
+    puppet_manifest: "puppet/manifests/image_upload.pp"
     puppet_modules: "puppet/modules:/etc/puppet/modules"
     timeout: 3600
 
