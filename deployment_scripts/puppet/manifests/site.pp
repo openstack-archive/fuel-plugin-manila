@@ -81,7 +81,6 @@ class {'::manila_auxiliary':
   debug               => $debug,
 }->
 
-create_resources('::manila_auxiliary::backend::generic', $backends)
 
 class {'::manila_auxiliary::services': }
 
@@ -92,3 +91,5 @@ class {'::manila_auxiliary::meta': }
 Class['::manila_auxiliary']->
 Class['::manila_auxiliary::services']->
 Class['::manila_auxiliary::meta']
+
+create_resources('::manila_auxiliary::backend::generic', $backends)
