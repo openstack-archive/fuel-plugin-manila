@@ -15,3 +15,4 @@
 
 
 cp $MANILA_IMAGE /var/www/nailgun/plugins/fuel-plugin-manila-1.0/repositories/ubuntu/
+mkdir -p /etc/fuel/plugins/fuel-plugin-manila-1.0/
