@@ -31,8 +31,6 @@ if [ -z "$ADMIN_NODE_CPU" ]; then export ADMIN_NODE_CPU=4; fi
 if [ -z "$SLAVE_NODE_MEMORY" ]; then export SLAVE_NODE_MEMORY=4096; fi
 if [ -z "$SLAVE_NODE_CPU" ]; then export SLAVE_NODE_CPU=4; fi
 
-# Init and update submodule
-git submodule update --init --recursive --remote
 
 sudo /sbin/iptables -F
 sudo /sbin/iptables -t nat -F
