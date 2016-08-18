@@ -2,7 +2,7 @@
 
 CLUSTER_ID=$1
 
-function gen_pass {
+gen_pass {
      openssl rand -base64 32|tr -d '='
 }
 
