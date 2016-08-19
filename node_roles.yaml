@@ -1,8 +1,8 @@
-fuel-plugin-manila_role:
+manila-share:
   # Role name
-  name: "Manila pomanila"
+  name: "Manila share"
   # Role description
-  description: "Desc of the manila role"
+  description: "The node that contains manila-share process"
   # If primary then during orchestration this role will be
   # separated into primary-role and role
   has_primary: false
@@ -11,3 +11,17 @@ fuel-plugin-manila_role:
   # Weight that will be used to sort out the
   # roles on the Fuel web UI
   weight: 1000
+
+manila-data:
+  # Role name
+  name: "Manila data"
+  # Role description
+  description: "The node that contains manila-data process"
+  # If primary then during orchestration this role will be
+  # separated into primary-role and role
+  has_primary: false
+  # Assign public IP to node if true
+  public_ip_required: false
+  # Weight that will be used to sort out the
+  # roles on the Fuel web UI
+  weight: 1001
