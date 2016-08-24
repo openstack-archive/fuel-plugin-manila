@@ -19,4 +19,3 @@ MANILA_PLUGIN_VERSION = os.environ.get('MANILA_PLUGIN_VERSION')
 MANILA_PLUGIN_PATH = os.environ.get('MANILA_PLUGIN_PATH')
 MANILA_IMAGE_PATH = os.environ.get('MANILA_IMAGE_PATH')
 plugin_name = 'fuel-plugin-manila'
-

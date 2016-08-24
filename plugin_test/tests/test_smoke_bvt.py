@@ -173,7 +173,7 @@ class TestManilaSmoke(TestBasic):
             path
         )
 
-        print manila_image
+        print (manila_image)
         assert_true(
             manila_image,
             "Upload of manila image to master node fail"
@@ -256,7 +256,7 @@ class TestManilaSmoke(TestBasic):
             self.ssh_manager.admin_ip,
             path
         )
-        print manila_image
+        print (manila_image)
         assert_true(
             manila_image,
             "Upload of manila image to master node fail"

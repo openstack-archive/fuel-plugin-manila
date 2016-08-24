@@ -33,7 +33,6 @@ msg = "Plugin couldn't be enabled. Check plugin version. Test aborted"
 
 def install_manila_plugin(master_node_ip):
     """Install plugin packages to the master node."""
-
     utils.upload_tarball(
         master_node_ip,
         MANILA_PLUGIN_PATH, "/var")
@@ -44,10 +43,10 @@ def install_manila_plugin(master_node_ip):
 
 def upload_manila_image(master_node_ip, image_dest_path):
     """Copy Manila qcow2 image to the master node.
+
     :type master_node_ip: string master-node ip
     :type image_dest_path: string destination path
     """
-
     logger.info(image_dest_path)
     try:
         logger.info("Start to upload manila image file")
@@ -63,7 +62,7 @@ def upload_manila_image(master_node_ip, image_dest_path):
         logger.info('File {} was uploaded on master'.format(dest_path))
         return dest_path
 
-    except:
+    except Exception:
         logger.error('Failed to upload file')
         logger.error(traceback.format_exc())
         return False
