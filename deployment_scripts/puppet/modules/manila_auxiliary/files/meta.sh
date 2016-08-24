@@ -9,8 +9,8 @@ fi
 
 if ! manila share-network-list | grep -q 'test_share_network'; then
     echo 'add test_share_network'
-    net_uid=$(neutron net-list | grep -q 'internal' | cut -f2 -d' ')
-    subnet_uid=$(neutron net-list | grep -q 'internal' | cut -f6 -d' ')
+    net_uid=$(neutron net-list | grep  'internal' | cut -f2 -d' ')
+    subnet_uid=$(neutron net-list | grep  'internal' | cut -f6 -d' ')
     manila share-network-create \
 	   --name test_share_network  \
 	   --neutron-net-id $net_uid  \

@@ -12,7 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-notify {'MODULAR: fuel-plugin-manila/site': }
+notify {'MODULAR: fuel-plugin-manila/site_data': }
 
 $manila      = hiera_hash('manila', {})
 $db_user     = 'manila'
@@ -50,6 +50,17 @@ $debug         = hiera('debug')
 $use_syslog    = hiera('use_syslog')
 
 
+$backends = {'generic' =>
+  {'share_backend_name'            => 'generic',
+    'driver_handles_share_servers' => 'true',
+    'share_driver'                 => 'manila.share.drivers.generic.GenericShareDriver',
+    'service_instance_user'        => 'manila',
+    'service_instance_password'    => 'manila',
+    'service_image_name'           => $image,
+    'path_to_private_key'          => '/var/lib/astute/manila/manila',
+    'path_to_public_key'           => '/var/lib/astute/manila/manila.pub',
+  }
+}
 
 
 class {'::manila_auxiliary':
@@ -74,10 +85,8 @@ class {'::manila_auxiliary':
 
 class {'::manila_auxiliary::services': }
 
-class {'::manila_auxiliary::ui': }
-
-class {'::manila_auxiliary::meta': }
-
 Class['::manila_auxiliary']->
-Class['::manila_auxiliary::services']->
-Class['::manila_auxiliary::meta']
+Class['::manila_auxiliary::services']
+
+
+#create_resources('::manila_auxiliary::backend::generic', $backends)

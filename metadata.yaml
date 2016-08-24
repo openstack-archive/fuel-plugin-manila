@@ -3,7 +3,7 @@ name: fuel-plugin-manila
 # Human-readable name for your plugin
 title: enable Manila service
 # Plugin version
-version: '1.0.0'
+version: '1.0.1'
 # Description
 description: Manila is the File Storage as a Service OpenStack project
 # Required fuel version

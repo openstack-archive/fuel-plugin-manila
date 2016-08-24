@@ -1,0 +1,2 @@
+* fix installation of pycrypto. Now it installs via pip. Build deb within the plugin
+* remove dirty hack from haproxy.pp
