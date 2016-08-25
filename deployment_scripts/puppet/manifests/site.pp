@@ -12,7 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-notify {'MODULAR: fuel-plugin-manila/site': }
+notify {'MODULAR: fuel-plugin-manila/main': }
 
 $manila      = hiera_hash('manila', {})
 $db_user     = 'manila'
@@ -20,7 +20,6 @@ $db_pass     = $manila['db_password']
 $manila_pass = $manila['user_password']
 $db_host     = hiera('database_vip')
 $sql_conn    = "mysql+pymysql://${db_user}:${db_pass}@${db_host}/manila?charset=utf8"
-$image       = $manila['service_vm_image']['img_name']
 
 $rabbit_hash   = hiera_hash('rabbit', {})
 $amqp_user     = $rabbit_hash['user']
@@ -50,8 +49,6 @@ $debug         = hiera('debug')
 $use_syslog    = hiera('use_syslog')
 
 
-
-
 class {'::manila_auxiliary':
   sql_connection      => $sql_conn,
   shared_backends     => 'generic', #should be array of backends
@@ -69,15 +66,4 @@ class {'::manila_auxiliary':
   nova_pass           => $nova_pass,
   verbose             => $verbose,
   debug               => $debug,
-}->
-
-
-class {'::manila_auxiliary::services': }
-
-class {'::manila_auxiliary::ui': }
-
-class {'::manila_auxiliary::meta': }
-
-Class['::manila_auxiliary']->
-Class['::manila_auxiliary::services']->
-Class['::manila_auxiliary::meta']
+}

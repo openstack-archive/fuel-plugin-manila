@@ -4,7 +4,7 @@
 - id: manila-share
   type: group
   role: [manila-share]
-  tasks: [hiera, globals, setup_repositories, tools, logging, netconfig, firewall, hosts, ntp-client, dns-client, cgroups, deploy_start, openstack-network-common-config, openstack-network-plugins-l2]
+  tasks: [hiera, globals, setup_repositories, tools, logging, netconfig, firewall, hosts, ntp-client, dns-client, cgroups, deploy_start]
   required_for: [deploy_end]
   requires: [deploy_start, primary-controller]
   parameters:
@@ -112,19 +112,6 @@
     puppet_modules: "puppet/modules:/etc/puppet/modules"
     timeout: 3600
 
-- id: manila-install-controller
-  type: puppet
-  groups: [primary-controller, controller]
-  version: 2.1.0
-  required_for: [manila-main]
-  requires: [manila-db]
-  cross-depends:
-     - name: manila-db
-  parameters:
-    puppet_manifest: "puppet/manifests/install.pp"
-    puppet_modules: "puppet/modules:/etc/puppet/modules"
-    timeout: 3600
-
 - id: manila-share-network-common-config
   type: puppet
   version: 2.1.0
@@ -149,12 +136,11 @@
     puppet_modules: /etc/puppet/modules
     timeout: 1800
 
-
 - id: manila-share-network-plugins-l2
   type: puppet
   version: 2.1.0
   groups: [manila-share]
-  required_for: [manila-install-share-data]
+  required_for: [manila-install]
   requires: [manila-share-network-common-config]
   refresh_on: [neutron_agent_ovs]
   cross-depends:
@@ -165,58 +151,25 @@
     puppet_modules: /etc/puppet/modules
     timeout: 1800
 
-
-- id: manila-install-share-data
+- id: manila-install
   type: puppet
-  groups: [manila-share, manila-data]
-  version: 2.1.0
-  required_for: [deploy_end]
-  requires: [hosts]
-  parameters:
-    puppet_manifest: "puppet/manifests/install_sd.pp"
-    puppet_modules: "puppet/modules:/etc/puppet/modules"
-    timeout: 3600
-
-- id: manila-init-controller
-  type: puppet
-  groups: [primary-controller, controller]
+  groups: [primary-controller, controller, manila-share, manila-data]
   version: 2.1.0
   required_for: [manila-main]
-  requires: [manila-install-controller]
+  requires: [manila-db]
+  cross-depends:
+     - name: manila-db
   parameters:
-    puppet_manifest: "puppet/manifests/init_controller.pp"
+    puppet_manifest: "puppet/manifests/install.pp"
     puppet_modules: "puppet/modules:/etc/puppet/modules"
     timeout: 3600
-
-- id: manila-init-share
-  type: puppet
-  groups: [manila-share]
-  version: 2.1.0
-  required_for: [deploy_end]
-  requires: [manila-install-share-data]
-  parameters:
-    puppet_manifest: "puppet/manifests/init_share.pp"
-    puppet_modules: "puppet/modules:/etc/puppet/modules"
-    timeout: 3600
-
-- id: manila-init-data
-  type: puppet
-  groups: [manila-data]
-  version: 2.1.0
-  required_for: [deploy_end]
-  requires: [manila-install-share-data]
-  parameters:
-    puppet_manifest: "puppet/manifests/init_data.pp"
-    puppet_modules: "puppet/modules:/etc/puppet/modules"
-    timeout: 3600
-
 
 - id: manila-image_upload
   type: puppet
   groups: [primary-controller]
   version: 2.1.0
   required_for: [manila-main]
-  requires: [manila-install-controller]
+  requires: [manila-install]
   parameters:
     puppet_manifest: "puppet/manifests/image_upload.pp"
     puppet_modules: "puppet/modules:/etc/puppet/modules"
@@ -226,7 +179,8 @@
   type: puppet
   groups: [primary-controller, controller]
   version: 2.1.0
-  requires: [manila-install-controller]
+  requires: [manila-install]
+  required_for: [manila-main]
   parameters:
     puppet_manifest: "puppet/manifests/haproxy.pp"
     puppet_modules: "puppet/modules:/etc/puppet/modules"
@@ -234,40 +188,65 @@
 
 - id: manila-main
   type: puppet
-  groups: [primary-controller, controller]
+  groups: [primary-controller, controller, manila-share, manila-data]
   version: 2.1.0
   cross-depends:
     - name: manila-db
   cross-depended-by:
     - name: deploy_end
-  requires: [manila-install-controller, manila-haproxy]
+  requires: [manila-install, manila-haproxy]
   parameters:
     puppet_manifest: "puppet/manifests/site.pp"
     puppet_modules: "puppet/modules:/etc/puppet/modules"
     timeout: 3600
 
-- id: manila-main_share
+- id: manila-controller-start
   type: puppet
-  groups: [manila-share]
+  groups: [primary-controller, controller]
   version: 2.1.0
-  cross-depends:
-    - name: manila-main
-  required_for: [deploy_end]
-  requires: [manila-init-share]
+  requires: [manila-main]
   parameters:
-    puppet_manifest: "puppet/manifests/site_share.pp"
+    puppet_manifest: "puppet/manifests/start_controller.pp"
     puppet_modules: "puppet/modules:/etc/puppet/modules"
     timeout: 3600
 
-- id: manila-main_data
+- id: manila-data-start
   type: puppet
   groups: [manila-data]
   version: 2.1.0
-  cross-depends:
-    - name: manila-main
-  required_for: [deploy_end]
-  requires: [manila-init-data]
+  requires: [manila-main]
   parameters:
-    puppet_manifest: "puppet/manifests/site_data.pp"
+    puppet_manifest: "puppet/manifests/start_data.pp"
+    puppet_modules: "puppet/modules:/etc/puppet/modules"
+    timeout: 3600
+
+- id: manila-share-start
+  type: puppet
+  groups: [manila-share]
+  version: 2.1.0
+  requires: [manila-main]
+  parameters:
+    puppet_manifest: "puppet/manifests/start_share.pp"
+    puppet_modules: "puppet/modules:/etc/puppet/modules"
+    timeout: 3600
+
+
+- id: manila-ui
+  type: puppet
+  groups: [primary-controller, controller]
+  version: 2.1.0
+  requires: [manila-main]
+  parameters:
+    puppet_manifest: "puppet/manifests/ui.pp"
+    puppet_modules: "puppet/modules:/etc/puppet/modules"
+    timeout: 3600
+
+- id: manila-meta
+  type: puppet
+  groups: [primary-controller]
+  version: 2.1.0
+  requires: [manila-controller-start]
+  parameters:
+    puppet_manifest: "puppet/manifests/meta.pp"
     puppet_modules: "puppet/modules:/etc/puppet/modules"
     timeout: 3600

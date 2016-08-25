@@ -12,13 +12,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-define manila_auxiliary::initd(
-  $desc = 'some manila init script',
-  $srv  = 'manila-something',
-){
-  file {"/etc/init/${srv}.conf":
-    ensure  => present,
-    content => template('manila_auxiliary/init.erb'),
-    notify  => Service[$srv],
-  }
-}
+notify {'MODULAR: fuel-plugin-manila/meta': }
+
+class {'::manila_auxiliary::meta': }

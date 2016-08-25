@@ -12,13 +12,21 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-define manila_auxiliary::initd(
-  $desc = 'some manila init script',
-  $srv  = 'manila-something',
-){
-  file {"/etc/init/${srv}.conf":
-    ensure  => present,
-    content => template('manila_auxiliary/init.erb'),
-    notify  => Service[$srv],
-  }
+notify {'MODULAR: fuel-plugin-manila/start_data': }
+
+
+$inits = {
+  'manila-data' => {
+    desc => 'manila-data init script',
+    srv  => 'manila-data',},
+}
+
+create_resources('::manila_auxiliary::initd', $inits)
+
+
+service { 'manila-data':
+  ensure    => 'running',
+  name      => 'manila-data',
+  enable    => true,
+  hasstatus => true,
 }
