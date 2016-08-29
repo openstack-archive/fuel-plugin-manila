@@ -11,6 +11,7 @@ Table of contents
 5. `Test Cycle Structure`_
 6. Test lists:
      a) `Smoke and BVT tests`_
+     b) `Integration tests`_
 
 .. _Introduction:
 
@@ -194,5 +195,6 @@ executed tests and schedule their execution.
   execution (detect time frames, responsible QA)
 
 .. _Smoke and bvt tests:
-
 .. include:: test_suite_smoke_bvt.rst
+.. _Integration tests:
+.. include:: test_suite_integration.rst

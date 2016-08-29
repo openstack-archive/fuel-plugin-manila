@@ -67,11 +67,11 @@ Steps
 #####
 
     1. Upload plugins and install.
-    2. Create environment with "Neutron with tunneling segmentation" as
+    2. Create environment with "Neutron with VLAN segmentation" as
        a network configuration.
-    3. Add a node with controller role.
-    4. Add a node with compute role.
-    5. Add a node with cinder role.
+    3. Add a node with Controller role.
+    4. Add a node with Compute + Cinder + Manila-share + Manila-data roles.
+    5. Add a node with Base-OS role.
     6. Enable plugin for new environment
     7. Run network check
     8. Deploy cluster with plugin.
@@ -109,13 +109,14 @@ Steps
 #####
 
     1. Upload plugins and install.
-    2. Create environment with "Neutron with tunneling segmentation" as
+    2. Create environment with "Neutron with VLAN segmentation" as 
        network configuration.
-    3. Add 3 nodes with controller and cinder roles.
-    4. Add 2 node with compute roles.
-    5. Enable plugin for new environment
-    6. Deploy cluster with plugin.
-    7. Run OSTF
+    3. Add 3 nodes with Controller role.
+    4. Add 1 node with Cinder + Manila-share + Manila-data roles.
+    5. Add 1 node with compute role.
+    6. Enable plugin for new environment
+    7. Deploy cluster with plugin.
+    8. Run OSTF
 
 Expected results
 ################
