@@ -48,16 +48,16 @@ class TestManilaSmoke(TestBasic):
             3. Ensure that plugin is installed successfully using cli,
                run command 'fuel plugins list'. Check name, version of plugin.
             4.Create a new environment with following parameters:
-                * Compute: hypervisor QEMU-KVM
+                * Compute: hypervisor QEMU
                 * Networking: Neutron with VLAN segmentation
-                * Storage: default
+                * Storage: Cinder LVM over iSCSI for volumes
                 * Additional services: default
             5. Enable Manila plugin for new environment.
             6. Attempt to remove enabled plugin.
                 Verify that plugin cannot be removed when it already enabled,
                 run command 'fuel plugins'.
-            7.Disable  plugin
-            8.Remove Plugin Manila
+            7. Disable  plugin
+            8. Remove Plugin Manila
                 Verify that plugin is removed, run command 'fuel plugins'.
         Duration: 20 min
 
@@ -93,7 +93,8 @@ class TestManilaSmoke(TestBasic):
             settings={
                 "net_provider": 'neutron',
                 "net_segment_type": NEUTRON_SEGMENT_TYPE
-            }
+            },
+            configure_ssl=settings.CLUSTER_ENDPOINT_USE_SSL
         )
 
         self.show_step(5)
@@ -142,13 +143,14 @@ class TestManilaSmoke(TestBasic):
             1. Upload plugins to the master node + upload Manila_Image
             2. Install plugin.
             3. Create a new environment with following parameters:
-                * Compute: KVM/QEMU
+                * Compute: QEMU
                 * Networking: Neutron with VLAN segmentation
-                * Storage: Cepth
+                * Storage: Cinder LVM
                 * Additional services: default
             4. Add nodes with following roles:
                 * Controller
-                * Compute + Cinder
+                * Compute + Cinder + Manila-share + Manila-data
+                * Base OS
             5. Configure interfaces on nodes.
             6. Configure network settings.
             7. Enable and configure Manila plugin.
@@ -173,7 +175,6 @@ class TestManilaSmoke(TestBasic):
             path
         )
 
-        print (manila_image)
         assert_true(
             manila_image,
             "Upload of manila image to master node fail"
@@ -187,14 +188,15 @@ class TestManilaSmoke(TestBasic):
             settings={
                 "net_provider": 'neutron',
                 "net_segment_type": NEUTRON_SEGMENT_TYPE
-            }
+            },
+            configure_ssl=settings.CLUSTER_ENDPOINT_USE_SSL
         )
         self.show_step(4)
         # Assign role to node
         self.fuel_web.update_nodes(
             cluster_id,
             {'slave-01': ['controller'],
-             'slave-02': ['compute', 'cinder'],
+             'slave-02': ['compute', 'cinder', 'manila-share', 'manila-data'],
              'slave-03': ['base-os']
              }
         )
@@ -214,7 +216,6 @@ class TestManilaSmoke(TestBasic):
         self.show_step(10)
         self.fuel_web.run_ostf(
             cluster_id=cluster_id, test_sets=['smoke', 'sanity'])
-        self.env.make_snapshot("manilla_install", is_make=True)
 
     @test(depends_on=[SetupEnvironment.prepare_slaves_5],
           groups=["manila_bvt"])
@@ -228,14 +229,14 @@ class TestManilaSmoke(TestBasic):
             3. Create a new environment HA with following parameters:
                 * Compute: KVM/QEMU
                 * Networking: Neutron with VLAN segmentation
-                * Storage: Cepth
+                * Storage: Cinder LVM over iSCSI for volumes
                 * Additional services: default
             4. Add nodes with following roles:
                 * Controller
                 * Controller
                 * Controller
-                * Compute + Cinder
-                * Compute + Cinder
+                * Cinder + Manila-share + Manila-data
+                * Compute
             5. Configure interfaces on nodes.
             6. Configure network settings.
             7. Enable and configure Manila plugin.
@@ -256,7 +257,6 @@ class TestManilaSmoke(TestBasic):
             self.ssh_manager.admin_ip,
             path
         )
-        print (manila_image)
         assert_true(
             manila_image,
             "Upload of manila image to master node fail"
@@ -270,7 +270,8 @@ class TestManilaSmoke(TestBasic):
             settings={
                 "net_provider": 'neutron',
                 "net_segment_type": NEUTRON_SEGMENT_TYPE
-            }
+            },
+            configure_ssl=settings.CLUSTER_ENDPOINT_USE_SSL
         )
 
         self.show_step(4)
@@ -280,8 +281,8 @@ class TestManilaSmoke(TestBasic):
             {'slave-01': ['controller'],
              'slave-02': ['controller'],
              'slave-03': ['controller'],
-             'slave-04': ['compute', 'cinder'],
-             'slave-05': ['compute', 'cinder']
+             'slave-04': ['cinder', 'manila-share', 'manila-data'],
+             'slave-05': ['compute', 'cinder', 'manila-share', 'manila-data']
              }
         )
 
