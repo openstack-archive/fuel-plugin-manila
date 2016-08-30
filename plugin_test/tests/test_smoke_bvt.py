@@ -13,17 +13,20 @@ License for the specific language governing permissions and limitations
 under the License.
 """
 
-from proboscis import test
-from proboscis.asserts import assert_true
 
 from fuelweb_test.helpers.decorators import log_snapshot_after_test
-from fuelweb_test.tests.base_test_case import TestBasic
-from fuelweb_test.tests.base_test_case import SetupEnvironment
 from fuelweb_test.settings import DEPLOYMENT_MODE
+from fuelweb_test.settings import DISABLE_SSL
 from fuelweb_test.settings import NEUTRON_SEGMENT_TYPE
+from fuelweb_test.tests.base_test_case import SetupEnvironment
+from fuelweb_test.tests.base_test_case import TestBasic
 
+from helpers import manila_service_verify
 from helpers import plugin
 from helpers import settings
+
+from proboscis.asserts import assert_true
+from proboscis import test
 
 
 @test(groups=['manila_plugin', 'manila_bvt_smoke'])
@@ -48,16 +51,16 @@ class TestManilaSmoke(TestBasic):
             3. Ensure that plugin is installed successfully using cli,
                run command 'fuel plugins list'. Check name, version of plugin.
             4.Create a new environment with following parameters:
-                * Compute: hypervisor QEMU-KVM
+                * Compute: hypervisor QEMU
                 * Networking: Neutron with VLAN segmentation
-                * Storage: default
+                * Storage: Cinder LVM over iSCSI for volumes
                 * Additional services: default
             5. Enable Manila plugin for new environment.
             6. Attempt to remove enabled plugin.
                 Verify that plugin cannot be removed when it already enabled,
                 run command 'fuel plugins'.
-            7.Disable  plugin
-            8.Remove Plugin Manila
+            7. Disable  plugin
+            8. Remove Plugin Manila
                 Verify that plugin is removed, run command 'fuel plugins'.
         Duration: 20 min
 
@@ -93,7 +96,8 @@ class TestManilaSmoke(TestBasic):
             settings={
                 "net_provider": 'neutron',
                 "net_segment_type": NEUTRON_SEGMENT_TYPE
-            }
+            },
+            configure_ssl=DISABLE_SSL
         )
 
         self.show_step(5)
@@ -142,19 +146,20 @@ class TestManilaSmoke(TestBasic):
             1. Upload plugins to the master node + upload Manila_Image
             2. Install plugin.
             3. Create a new environment with following parameters:
-                * Compute: KVM/QEMU
+                * Compute: QEMU
                 * Networking: Neutron with VLAN segmentation
-                * Storage: Cepth
+                * Storage: Cinder LVM
                 * Additional services: default
-            4. Add nodes with following roles:
-                * Controller
-                * Compute + Cinder
+            4. Enable and configure Manila plugin.
             5. Configure interfaces on nodes.
             6. Configure network settings.
-            7. Enable and configure Manila plugin.
+            7. Add nodes with following roles:
+                * Controller
+                * Compute + Cinder + Manila-share + Manila-data
+                * Base OS
             8. Verify networks.
             9. Deploy the cluster.
-            10. Run OSTF.
+            10. Verify Manila service basic functionality (share create/mount).
         Duration: 2.0 hour
 
         """
@@ -173,7 +178,6 @@ class TestManilaSmoke(TestBasic):
             path
         )
 
-        print (manila_image)
         assert_true(
             manila_image,
             "Upload of manila image to master node fail"
@@ -187,24 +191,24 @@ class TestManilaSmoke(TestBasic):
             settings={
                 "net_provider": 'neutron',
                 "net_segment_type": NEUTRON_SEGMENT_TYPE
-            }
+            },
+            configure_ssl=DISABLE_SSL
         )
         self.show_step(4)
-        # Assign role to node
-        self.fuel_web.update_nodes(
-            cluster_id,
-            {'slave-01': ['controller'],
-             'slave-02': ['compute', 'cinder'],
-             'slave-03': ['base-os']
-             }
-        )
+        plugin.enable_plugin_manila(
+            cluster_id, self.fuel_web)
 
         self.show_step(5)
         self.show_step(6)
         self.show_step(7)
-        plugin.enable_plugin_manila(
-            cluster_id, self.fuel_web)
-
+        # Assign role to node
+        self.fuel_web.update_nodes(
+            cluster_id,
+            {'slave-01': ['controller'],
+             'slave-02': ['compute', 'cinder', 'manila-share', 'manila-data'],
+             'slave-03': ['base-os']
+             }
+        )
         self.show_step(8)
         self.fuel_web.verify_network(cluster_id)
 
@@ -212,15 +216,18 @@ class TestManilaSmoke(TestBasic):
         self.fuel_web.deploy_cluster_wait(cluster_id)
 
         self.show_step(10)
-        self.fuel_web.run_ostf(
-            cluster_id=cluster_id, test_sets=['smoke', 'sanity'])
-        self.env.make_snapshot("manilla_install", is_make=True)
+
+        cluster_id = self.fuel_web.get_last_created_cluster()
+        os_ip = self.fuel_web.get_public_vip(cluster_id)
+        manila_service_verify.basic_functionality(os_ip)
+
+        self.env.make_snapshot("manila_smoke", is_make=True)
 
     @test(depends_on=[SetupEnvironment.prepare_slaves_5],
           groups=["manila_bvt"])
     @log_snapshot_after_test
     def manila_bvt(self):
-        """"Check deployment with Manila plugin and one controller.
+        """Check deployment with Manila plugin and one controller.
 
         Scenario:
             1. Upload plugins to the master node + upload Manila_Image
@@ -228,20 +235,21 @@ class TestManilaSmoke(TestBasic):
             3. Create a new environment HA with following parameters:
                 * Compute: KVM/QEMU
                 * Networking: Neutron with VLAN segmentation
-                * Storage: Cepth
+                * Storage: Cinder LVM over iSCSI for volumes
                 * Additional services: default
-            4. Add nodes with following roles:
-                * Controller
-                * Controller
-                * Controller
-                * Compute + Cinder
-                * Compute + Cinder
+            4. Enable and configure Manila plugin.
             5. Configure interfaces on nodes.
             6. Configure network settings.
-            7. Enable and configure Manila plugin.
+            7. Add nodes with following roles:
+                * Controller
+                * Controller
+                * Controller
+                * Cinder + Manila-share + Manila-data
+                * Compute
             8. Verify networks.
             9. Deploy the cluster.
             10. Run OSTF.
+            11. Verify Manila service basic functionality (share create/mount).
         Duration: 2.2 hour
 
         """
@@ -256,7 +264,6 @@ class TestManilaSmoke(TestBasic):
             self.ssh_manager.admin_ip,
             path
         )
-        print (manila_image)
         assert_true(
             manila_image,
             "Upload of manila image to master node fail"
@@ -270,27 +277,26 @@ class TestManilaSmoke(TestBasic):
             settings={
                 "net_provider": 'neutron',
                 "net_segment_type": NEUTRON_SEGMENT_TYPE
-            }
+            },
+            configure_ssl=DISABLE_SSL
         )
 
         self.show_step(4)
+        plugin.enable_plugin_manila(
+            cluster_id, self.fuel_web)
+        self.show_step(5)
+        self.show_step(6)
+        self.show_step(7)
         # Assign role to node
         self.fuel_web.update_nodes(
             cluster_id,
             {'slave-01': ['controller'],
              'slave-02': ['controller'],
              'slave-03': ['controller'],
-             'slave-04': ['compute', 'cinder'],
-             'slave-05': ['compute', 'cinder']
+             'slave-04': ['cinder', 'manila-share', 'manila-data'],
+             'slave-05': ['compute', 'cinder', 'manila-share', 'manila-data']
              }
         )
-
-        self.show_step(5)
-        self.show_step(6)
-        self.show_step(7)
-        plugin.enable_plugin_manila(
-            cluster_id, self.fuel_web)
-
         self.show_step(8)
         self.fuel_web.verify_network(cluster_id)
 
@@ -300,3 +306,10 @@ class TestManilaSmoke(TestBasic):
         self.show_step(10)
         self.fuel_web.run_ostf(
             cluster_id=cluster_id, test_sets=['smoke', 'sanity', 'ha'])
+
+        self.show_step(11)
+        cluster_id = self.fuel_web.get_last_created_cluster()
+        os_ip = self.fuel_web.get_public_vip(cluster_id)
+        manila_service_verify.basic_functionality(os_ip)
+
+        self.env.make_snapshot("manila_bvt", is_make=True)
