@@ -18,7 +18,8 @@ import os
 MANILA_PLUGIN_VERSION = os.environ.get('MANILA_PLUGIN_VERSION')
 OS_RELEASE = os.environ.get('OS_RELEASE')
 CLUSTER_ENDPOINT_USE_SSL = os.environ.get('CLUSTER_ENDPOINT_USE_SSL', True)
-MANILA_PLUGIN_VERSION = os.environ.get('MANILA_PLUGIN_VERSION')
+MANILA_PLUGIN_VERSION = os.environ.get('MANILA_PLUGIN_VERSION', '1.0.1')
 MANILA_PLUGIN_PATH = os.environ.get('MANILA_PLUGIN_PATH')
 MANILA_IMAGE_PATH = os.environ.get('MANILA_IMAGE_PATH')
 plugin_name = 'fuel-plugin-manila'
+server1_conf_path = 'plugin_test/helpers/server1_conf1.yaml'
