@@ -13,15 +13,15 @@ License for the specific language governing permissions and limitations
 under the License.
 """
 
-import traceback
 import os
+import traceback
 
-from proboscis.asserts import assert_true
 
+from fuelweb_test.helpers.ssh_manager import SSHManager
 from fuelweb_test.helpers import utils
 from fuelweb_test import logger
-from fuelweb_test.helpers.ssh_manager import SSHManager
 
+from proboscis.asserts import assert_true
 from settings import MANILA_IMAGE_PATH
 from settings import MANILA_PLUGIN_PATH
 from settings import plugin_name
@@ -33,6 +33,7 @@ msg = "Plugin couldn't be enabled. Check plugin version. Test aborted"
 
 def install_manila_plugin(master_node_ip):
     """Install plugin packages to the master node."""
+
     utils.upload_tarball(
         master_node_ip,
         MANILA_PLUGIN_PATH, "/var")
@@ -47,6 +48,7 @@ def upload_manila_image(master_node_ip, image_dest_path):
     :type master_node_ip: string master-node ip
     :type image_dest_path: string destination path
     """
+
     logger.info(image_dest_path)
     try:
         logger.info("Start to upload manila image file")
