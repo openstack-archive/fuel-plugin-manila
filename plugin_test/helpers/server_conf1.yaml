@@ -1,0 +1,12 @@
+server:
+    name: test_share_server
+os_credentials:
+  manila:
+    user: 'manila'
+    password: 'manila'
+networks:
+    name: 'admin_internal_net'
+flavor:
+    name: 'manila-service-flavor'
+image_map:
+    name: 'manila-service-image'
