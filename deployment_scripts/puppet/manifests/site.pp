@@ -48,6 +48,9 @@ $verbose       = hiera('verbose')
 $debug         = hiera('debug')
 $use_syslog    = hiera('use_syslog')
 
+$public_ssl    = hiera_hash('public_ssl', {})
+
+
 
 class {'::manila_auxiliary':
   sql_connection      => $sql_conn,
@@ -57,6 +60,7 @@ class {'::manila_auxiliary':
   rabbit_hosts        => $amqp_hosts,
   rabbit_use_ssl      => 'False',
   rabbit_password     => $amqp_password,
+  ssl_cert_source     => $public_ssl['cert_source'],
   auth_url            => $auth_url,
   auth_uri            => $auth_uri,
   br_mgmt_ip          => $br_mgmt_ip,

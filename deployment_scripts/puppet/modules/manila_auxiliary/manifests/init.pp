@@ -51,6 +51,7 @@ class manila_auxiliary (
   $rabbit_hosts        = undef,
   $rabbit_use_ssl      = 'False',
   $rabbit_password     = undef,
+  $ssl_cert_source     = undef,
   $auth_url            = undef,
   $auth_uri            = undef,
   $cinder_pass         = undef,
@@ -144,5 +145,15 @@ class manila_auxiliary (
       'nova/project_name':      value => $project_name;
       'nova/user_domain_id':    value => $user_domain_id;
       'nova/username':          value => 'nova';
+    }
+
+    if $ssl_cert_source in 'self_signed' {
+      manila_config {
+        'nova/api_insecure':   value => True;
+        'nova/insecure':       value => True;
+        'neutron/insecure':    value => True;
+        'cinder/api_insecure': value => True;
+        'cinder/insecure':     value => True;
+      }
     }
 }
