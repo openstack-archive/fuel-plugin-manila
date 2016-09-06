@@ -31,6 +31,9 @@
   version: 2.1.0
   requires: [pre_deployment_start]
   required_for: [manila-copy_keys]
+  condition:
+    yaql_exp: >
+     $.cluster.status in [new] 
   parameters:
     cmd: sh /etc/puppet/modules/osnailyfacter/modular/astute/generate_keys.sh -p /var/lib/fuel/keys/ -i {CLUSTER_ID} -s 'manila'
     timeout: 180
@@ -59,6 +62,9 @@
   version: 2.1.0
   requires: [pre_deployment_start]
   required_for: [manila-hiera]
+  condition:
+    yaql_exp: >
+     $.cluster.status in [new] 
   parameters:
     cmd: sh /var/www/nailgun/plugins/fuel-plugin-manila-1.0/gen_password.sh {CLUSTER_ID}
     timeout: 180
@@ -102,7 +108,8 @@
   requires: [primary-database, database, manila-hiera]
   condition:
     yaql_exp: >
-      changedAny($.mysql, $.network_metadata.vips, $.get('database_vip'))
+      changedAny($.mysql, $.network_metadata.vips, $.get('database_vip')),
+      $.cluster.status in [new] 
   cross-depends:
     - name: /^(primary-)?database$/
   cross-depended-by:
