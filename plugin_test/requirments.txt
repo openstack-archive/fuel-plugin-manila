@@ -1,0 +1,1 @@
+wget http://jenkins-tpi.bud.mirantis.net:8080/view/manila1.0/job/9.0.manila.build/97/artifact/fuel-plugin-manila-1.0-1.0.0-1-97.noarch.rpm
