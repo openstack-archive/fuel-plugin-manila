@@ -75,6 +75,7 @@ Steps
     6. Enable plugin for new environment
     7. Run network check
     8. Deploy cluster with plugin.
+    9. Verify Manila service basic functionality (share add/mount).
 
 Expected results
 ################
@@ -107,16 +108,18 @@ core
 
 Steps
 #####
-
     1. Upload plugins and install.
-    2. Create environment with "Neutron with VLAN segmentation" as 
-       network configuration.
-    3. Add 3 nodes with Controller role.
-    4. Add 1 node with Cinder + Manila-share + Manila-data roles.
-    5. Add 1 node with compute role.
-    6. Enable plugin for new environment
-    7. Deploy cluster with plugin.
-    8. Run OSTF
+    2. Create environment with "Neutron with tunneling segmentation" as a network configuration an
+       Ceph as storage backends.
+    3. Enable plugin for new environment
+    4. Add a node with Controller + ceph-osd roles.
+    5. Add a node with Controller + ceph-osd roles.
+    6. Add a node with Controller + ceph-osd roles.
+    7. Add a node with Manila-share + Manila-data roles.
+    8. Add a node with Compute role.
+    9. Deploy cluster with plugin.
+    10. Run OSTF.
+    11. Verify Manila service basic functionality (share add/mount).
 
 Expected results
 ################
