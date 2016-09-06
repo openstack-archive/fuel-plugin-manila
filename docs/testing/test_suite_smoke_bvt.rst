@@ -71,10 +71,11 @@ Steps
        a network configuration.
     3. Add a node with Controller role.
     4. Add a node with Compute + Cinder + Manila-share + Manila-data roles.
-    5. Add a node with Base-OS role.
+    5. Add a node with Compute + Cinder
     6. Enable plugin for new environment
     7. Run network check
     8. Deploy cluster with plugin.
+    9. Verify Manila service basic functionality (share add/mount).
 
 Expected results
 ################
@@ -95,8 +96,7 @@ manila_bvt
 Description
 ###########
 
-BVT test for manila plugin. Deploy cluster with a controller, a compute and
-cinder roles and install Manila plugin.
+BVT test for manila plugin. Verify cluster and manila sevice functionality after deploy in HA mode.
 
 
 Complexity
@@ -107,16 +107,16 @@ core
 
 Steps
 #####
-
     1. Upload plugins and install.
-    2. Create environment with "Neutron with VLAN segmentation" as 
-       network configuration.
-    3. Add 3 nodes with Controller role.
-    4. Add 1 node with Cinder + Manila-share + Manila-data roles.
-    5. Add 1 node with compute role.
-    6. Enable plugin for new environment
+    2. Create environment with "Neutron with tunneling segmentation" as a network configuration and
+       Ceph as storage backends.
+    3. Enable plugin for new environment
+    4. Add 3 node with Controller + ceph-osd roles.
+    5. Add a node with Manila-share + Manila-data roles.
+    6. Add a node with Compute role.
     7. Deploy cluster with plugin.
-    8. Run OSTF
+    8. Run OSTF.
+    9. Verify Manila service basic functionality (share add/mount).
 
 Expected results
 ################

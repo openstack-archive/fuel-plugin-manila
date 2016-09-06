@@ -13,9 +13,11 @@ License for the specific language governing permissions and limitations
 under the License.
 """
 
-
 import os
-MANILA_PLUGIN_VERSION = os.environ.get('MANILA_PLUGIN_VERSION')
+MANILA_PLUGIN_VERSION = os.environ.get('MANILA_PLUGIN_VERSION', '1.0.1')
 MANILA_PLUGIN_PATH = os.environ.get('MANILA_PLUGIN_PATH')
 MANILA_IMAGE_PATH = os.environ.get('MANILA_IMAGE_PATH')
+MANILA_IMAGE_DEST_PATH = '/var/www/nailgun/plugins/fuel-plugin-manila-' \
+                         + MANILA_PLUGIN_VERSION[0:3] \
+                         + '/repositories/ubuntu'
 plugin_name = 'fuel-plugin-manila'
