@@ -66,12 +66,9 @@ class TestManilaIntegration(TestBasic):
         self.env.revert_snapshot("ready_with_3_slaves")
         self.show_step(1)
         plugin.install_manila_plugin(self.ssh_manager.admin_ip)
-        # upload manila image to master node
         plugin.upload_manila_image(self.ssh_manager.admin_ip, path)
 
         self.show_step(2)
-        # Configure new cluster
-
         cluster_id = self.fuel_web.create_cluster(
             name=self.__class__.__name__,
             mode=DEPLOYMENT_MODE,
@@ -86,7 +83,6 @@ class TestManilaIntegration(TestBasic):
 
         self.show_step(3)
         plugin.enable_plugin_manila(cluster_id, self.fuel_web)
-        # Assign role to node
         self.fuel_web.update_nodes(
             cluster_id,
             {'slave-01': ['controller', 'manila-share', 'ceph-osd'],
