@@ -25,10 +25,6 @@ from helpers.manila_service_verify import TestPluginCheck
 from helpers import plugin
 from proboscis import test
 
-# set_default
-path = "/var/www/nailgun/plugins/fuel-plugin-manila-1.0/repositories" \
-       "/ubuntu"
-
 
 @test(groups=['manila_plugin', 'manila_integration'])
 class TestManilaIntegration(TestBasic):
@@ -66,18 +62,15 @@ class TestManilaIntegration(TestBasic):
         self.env.revert_snapshot("ready_with_3_slaves")
         self.show_step(1)
         plugin.install_manila_plugin(self.ssh_manager.admin_ip)
-        # upload manila image to master node
-        plugin.upload_manila_image(self.ssh_manager.admin_ip, path)
+        plugin.upload_manila_image(self.ssh_manager.admin_ip,)
 
         self.show_step(2)
-        # Configure new cluster
-
         cluster_id = self.fuel_web.create_cluster(
             name=self.__class__.__name__,
             mode=DEPLOYMENT_MODE,
             settings={
                 "net_provider": 'neutron',
-                "net_segment_type": NEUTRON_SEGMENT['vlan'],
+                "net_segment_type": NEUTRON_SEGMENT,
                 'volumes_ceph': True,
                 'volumes_lvm': False
             },
@@ -86,7 +79,6 @@ class TestManilaIntegration(TestBasic):
 
         self.show_step(3)
         plugin.enable_plugin_manila(cluster_id, self.fuel_web)
-        # Assign role to node
         self.fuel_web.update_nodes(
             cluster_id,
             {'slave-01': ['controller', 'manila-share', 'ceph-osd'],
@@ -103,7 +95,4 @@ class TestManilaIntegration(TestBasic):
                                test_sets=['smoke', 'sanity'])
 
         self.show_step(6)
-        # verify manila services after deploy
         TestPluginCheck(self).verify_manila_functionality()
-
-
