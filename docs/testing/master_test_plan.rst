@@ -12,7 +12,7 @@ Table of contents
 6. Test lists:
      a) `Smoke and BVT tests`_
      b) `Integration tests`_
-
+     c) `Functional tests`_
 .. _Introduction:
 
 Introduction
@@ -198,3 +198,5 @@ executed tests and schedule their execution.
 .. include:: test_suite_smoke_bvt.rst
 .. _Integration tests:
 .. include:: test_suite_integration.rst
+.. _Functional tests:
+.. include:: test_suite_functional.rst
