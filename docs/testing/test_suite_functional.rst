@@ -220,3 +220,43 @@ Expected results
 ################
 
 All steps must be completed successfully, without any errors.
+
+
+ID
+##
+
+manila_add_ceph
+
+
+Description
+###########
+
+Verify that node with ceph-osd role can added after deploying.
+
+Complexity
+##########
+
+core
+
+
+Steps
+#####
+
+Run OSTF tests
+
+    1. Upload plugins and install.
+    2. Create an environment.
+    3. Add at least 3 nodes with ceph-osd role.
+    4. Deploy cluster with plugin.
+    5. Run OSTF.
+    6. Verify Manila service basic functionality (share create/mount).
+    7. Add another ceph-osd node and deploy changes.
+    8. Deploy cluster with plugin.
+    9. Run OSTF.
+    10. Verify Manila service basic functionality (share create/mount).
+
+
+Expected results
+################
+
+All steps must be completed successfully, without any errors.
