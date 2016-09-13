@@ -1,0 +1,10 @@
+Code-Review+1: Fuel TPI CI <pi-ci@mirantis.com>
+Code-Review+1: Ruslan Khozinov <rkhozinov@mirantis.com>
+Code-Review+2: Igor Gajsin <igajsin@mirantis.com>
+Workflow+1: Igor Gajsin <igajsin@mirantis.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 13 Sep 2016 12:25:35 +0000
+Reviewed-on: https://review.openstack.org/369331
+Project: openstack/fuel-plugin-manila
+Branch: refs/heads/master
