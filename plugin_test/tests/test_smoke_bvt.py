@@ -18,7 +18,6 @@ from fuelweb_test.settings import DEPLOYMENT_MODE
 from fuelweb_test.tests.base_test_case import SetupEnvironment
 from fuelweb_test.tests.base_test_case import TestBasic
 
-from helpers.manila_service_verify import TestPluginCheck
 from helpers import plugin
 from helpers import settings
 
@@ -186,7 +185,6 @@ class ManilaTestClass(TestBasic):
         self.fuel_web.deploy_cluster_wait(cluster_id)
 
         self.show_step(7)
-        TestPluginCheck(self).verify_manila_functionality()
 
     @test(depends_on=[SetupEnvironment.prepare_slaves_5],
           groups=["manila_bvt"])
@@ -254,4 +252,3 @@ class ManilaTestClass(TestBasic):
                                test_sets=['smoke', 'sanity', 'ha'])
 
         self.show_step(7)
-        TestPluginCheck(self).verify_manila_functionality()
