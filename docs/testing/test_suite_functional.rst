@@ -134,3 +134,46 @@ Expected results
 ################
 
 All steps must be completed successfully, without any errors.
+
+
+ID
+##
+
+manila_del_add_share
+
+
+Description
+###########
+
+Verify that node with manila-share role can be deleted and added after deploying.
+
+Complexity
+##########
+
+core
+
+
+Steps
+#####
+
+Run OSTF tests
+
+    1. Upload plugins and install.
+    2. Create an environment.
+    3. Add at least 2 nodes with manila-share role.
+    4. Deploy cluster with plugin.
+    5. Run OSTF.
+    6. Verify Manila service basic functionality (share create/mount).
+    7. Delete a manila-share node and deploy changes.
+    8. Deploy cluster with plugin.
+    9. Run OSTF.
+    10. Verify Manila service basic functionality (share create/mount).
+    11. Add a manila-share node and deploy changes.
+    12. Deploy cluster with plugin.
+    13. Run OSTF.
+    14. Verify Manila service basic functionality (share create/mount).
+
+Expected results
+################
+
+All steps must be completed successfully, without any errors.
