@@ -1,0 +1,10 @@
+Code-Review+1: Olesia Tsvigun <otsvigun@mirantis.com>
+Code-Review+1: Fuel TPI CI <pi-ci@mirantis.com>
+Code-Review+2: okosse <okosse@mirantis.com>
+Workflow+1: okosse <okosse@mirantis.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Wed, 14 Sep 2016 09:36:41 +0000
+Reviewed-on: https://review.openstack.org/366014
+Project: openstack/fuel-plugin-manila
+Branch: refs/heads/master
