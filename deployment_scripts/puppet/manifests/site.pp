@@ -24,7 +24,7 @@ $sql_conn    = "mysql+pymysql://${db_user}:${db_pass}@${db_host}/manila?charset=
 $rabbit_hash   = hiera_hash('rabbit', {})
 $amqp_user     = $rabbit_hash['user']
 $amqp_password = $rabbit_hash['password']
-$amqp_hosts    = split(hiera('amqp_hosts', ''), ',')
+$amqp_hosts    = hiera('amqp_hosts', '')
 
 $network_metadata = hiera_hash('network_metadata', {})
 $ns               = hiera_hash('network_scheme', {})
