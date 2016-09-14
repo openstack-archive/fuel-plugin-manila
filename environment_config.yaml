@@ -2,10 +2,87 @@ attributes:
   metadata:
     # Settings group can be one of "general", "security", "compute", "network",
     # "storage", "logging", "openstack_services" and "other".
-    group: 'storage'
+    group: 'openstack_services'
+
+  use-generic-driver:
+    type: 'checkbox'
+    weight: 10
+    value: false
+    label: 'Use the Generic driver'
+    description: 'Use the cinder volumes as a backend for manila shares'
+
   fuel-plugin-manila_image:
     value: 'manila-service-image.qcow2'
     label: 'Image name'
     description: 'Name of the service image for generic driver'
     weight: 25
-    type: "text"
+    type: 'text'
+    restrictions:
+      - condition: "settings:fuel-plugin-manila.use-generic-driver.value != true"
+        action: hide
+
+  use-netapp-driver:
+    type: 'checkbox'
+    weight: 30
+    value: false
+    label: 'Use the NetApp driver'
+    description: 'Use the NetApp onTap storage as a backend for manila shares'
+
+  netapp-host:
+    type: 'text'
+    weight: 31
+    label: 'NetApp server hostname'
+    description: 'Set the address, port and protocol for to the server access'
+    value: ""
+    restrictions:
+      - condition: "settings:fuel-plugin-manila.use-netapp-driver.value != true"
+        action: hide
+
+  netapp-user:
+    type: 'text'
+    weight: 32
+    label: 'NetApp server username'
+    description: 'Set the username for to the server access'
+    value: ""
+    restrictions:
+      - condition: "settings:fuel-plugin-manila.use-netapp-driver.value != true"
+        action: hide
+  netapp-pass:
+    type: 'text'
+    weight: 33
+    label: 'NetApp server password'
+    description: 'Set the password for to the server access'
+    value: ""
+    restrictions:
+      - condition: "settings:fuel-plugin-manila.use-netapp-driver.value != true"
+        action: hide
+
+  netapp-root_volume_aggregate:
+    type: 'text'
+    weight: 34
+    label: 'NetApp root volume aggregate'
+    description: 'Set the parameter netapp_root_volume_aggregate'
+    value: 'aggr1'
+    restrictions:
+      - condition: "settings:fuel-plugin-manila.use-netapp-driver.value != true"
+        action: hide
+
+  netapp-aggregate_name_search_pattern:
+    type: 'text'
+    weight: 35
+    label: 'NetApp search pattern for aggregation names'
+    description: 'Set the parameter netapp_aggregate_name_search_pattern'
+    value: '^((?!aggr0).)*$'
+    restrictions:
+      - condition: "settings:fuel-plugin-manila.use-netapp-driver.value != true"
+        action: hide
+
+  netapp-port_name_search_pattern:
+    type: 'text'
+    weight: 35
+    label: 'NetApp search pattern for storage port names'
+    description: 'Set the parameter netapp_port_name_search_pattern'
+    value: '^(e0a)$'
+    restrictions:
+      - condition: "settings:fuel-plugin-manila.use-netapp-driver.value != true"
+        action: hide
