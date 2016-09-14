@@ -13,8 +13,12 @@ cd repositories/python
 build_deb "1:2.0.1" manila
 
 sed -i s/'python-keystoneclient'/'#python-keystoneclient'/ manila-ui/requirements.txt
+sed -i s/'disabled_quotas.extend(_get_manila_disabled_quotas(request))'/'disabled_quotas.update(_get_manila_disabled_quotas(request))'/ manila-ui/manila_ui/dashboards/project/shares/__init__.py
 build_deb 2.1.1 manila-ui
-cd manila-ui; git checkout stable/mitaka; git checkout -- requirements.txt; cd ..
+cd manila-ui; git checkout stable/mitaka;
+git checkout -- requirements.txt;
+git checkout -- manila_ui/dashboards/project/shares/__init__.py
+cd ..
 
 sed -i s/'python-keystoneclient'/'#python-keystoneclient'/ python-manilaclient/requirements.txt
 sed -i s/'pycrypto'/'#pycrypto'/ python-manilaclient/requirements.txt
