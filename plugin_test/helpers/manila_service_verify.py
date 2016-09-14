@@ -43,6 +43,29 @@ class TestPluginCheck(object):
         self.manila_conn = os_manila_actions.ManilaActions(
             ip, SERVTEST_USERNAME, SERVTEST_PASSWORD, SERVTEST_TENANT)
 
+    def verify_share_mount(self, ssh_client, test_share):
+        # create mounting point
+        mounting_point = '/mnt/share1'
+        cmd = "sudo mkdir {0}".format(mounting_point)
+        openstack.execute(ssh_client, cmd)
+
+        # mounting point
+        cmd2 = "sudo mount -t nfs {1} {0}".format(mounting_point,
+                                                  test_share.export_location)
+
+        output_1 = openstack.execute(ssh_client, cmd2)
+        cmd3 = "echo Share is created > {0}/file.txt ".format(mounting_point)
+        openstack.execute(ssh_client, cmd3)
+        asserts.assert_true(output_1['exit_code'] == 0,
+                            message="Failed to mount network share")
+
+        cmd4 = "cat /mnt/share1/file.txt ".format(mounting_point)
+        output_2 = openstack.execute(ssh_client, cmd4)
+        asserts.assert_true(
+            'Share is created' in output_2['stdout'],
+            "R/W access for {0} verified".format(test_share.export_location))
+        logger.info('#' * 10 + "Network share mounted and work as expected")
+
     def verify_manila_functionality(self):
         """This method do basic functionality check :
 
@@ -65,17 +88,17 @@ class TestPluginCheck(object):
         logger.debug('admin_internal_net id is :{}'.format(network))
 
         # create share network (share network = internal_admin_network)
-        logger.info('#' * 10 + "Create manila share network" + '#' * 10)
+        logger.info('#'*10 + "Create manila share network" + '#' * 10)
         s_net = self.manila_conn.create_share_network(
             net_id=network.get('id'), subnet_id=network.get('subnets'))
         asserts.assert_equal(s_net.name, 'Test Share network',
                              message="Failed to create manila share network")
 
         share_network_id = s_net.id
-        logger.info('#' * 10 + "Manila share network ID :{0}".format(s_net.id))
+        logger.info('#'*10 + "Manila share network ID :{0}".format(s_net.id))
 
         # create share and wait until it will becomes available
-        logger.info('#' * 10 + "Create manila share" + '#' * 10)
+        logger.info('#'*10 + "Create manila share" + '#' * 10)
         test_share = self.manila_conn.create_basic_share(
             share_name='test_share', network=share_network_id)
         asserts.assert_equal(test_share.name, 'test_share',
@@ -85,13 +108,9 @@ class TestPluginCheck(object):
         logger.info('#'*10 + "Share created and become available")
 
         logger.info('#'*10 + "add access rule allow any ip for created share")
-        access = self.manila_conn.add_acc_rule(
-            share_id=test_share, rule='0.0.0.0/0')
+        self.manila_conn.add_acc_rule(share_id=test_share, rule='0.0.0.0/0')
 
-        asserts.assert_equal(access.type, 'ip',
-                             message="Failed to assign ACL for manila share")
-
-        logger.info("Create and configure instance to verify share")
+        logger.info('#'*10 + "Create and configure instance to verify share")
         test_instance = openstack.create_instance(self.os_conn)
         openstack.verify_instance_state(self.os_conn, 'test_share_server')
 
@@ -100,28 +119,10 @@ class TestPluginCheck(object):
             self.os_conn, test_instance)
         logger.info("IP: {0} user: {1} pass:{1}".format(fl_ip, 'manila'))
 
-        logger.info('#' * 10 + "Connect via ssh to server")
+        logger.info('#'*10 + "Connect via ssh to server")
         ssh_client = openstack.get_ssh_connection(fl_ip)
 
         msg = 'New instance started floating ip is: {0}'.format(fl_ip)
         logger.info(msg)
 
-        # create mounting point
-        mounting_point = '/mnt/share1'
-        cmd = "sudo mkdir {0}".format(mounting_point)
-        openstack.execute(ssh_client, cmd)
-
-        # mounting point
-        cmd2 = "sudo mount -t nfs {1} {0}".format(mounting_point,
-                                                  test_share.export_location)
-        openstack.execute(ssh_client, cmd2)
-
-        cmd3 = "echo Share is created > {0}/file.txt ".format(mounting_point)
-        openstack.execute(ssh_client, cmd3)
-
-        cmd3 = "cat /mnt/share1/file.txt ".format(mounting_point)
-        output = openstack.execute(ssh_client, cmd3)
-        asserts.assert_true(
-            'Share is created' in output['stdout'],
-            "R/W access for {0} verified".format(test_share.export_location))
-        logger.info('Network share mounted and work as expected')
+        self.verify_share_mount(ssh_client, test_share)
