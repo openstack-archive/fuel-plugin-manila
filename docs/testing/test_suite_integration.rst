@@ -3,117 +3,6 @@ Integration tests
 =================
 
 
-Controller HA test
-------------------
-
-
-ID
-##
-
-manila_controller_ha
-
-
-Description
-###########
-
-Check cluster deploy in HA mode (3 controllers).
-
-
-Complexity
-##########
-
-core
-
-
-Steps
-#####
-    1. Upload plugins and install.
-    2. Create environment with at least 3 Controller, 1 Compute, 1 Cinder,
-       1 Manila-share and 1 Manila-data roles.
-    3. Deploy cluster with plugin.
-    4. Run OSTF.
-    5. Verify Manila service basic functionality (share create/mount).
-
-Expected results
-################
-
-All steps must be completed successfully, without any errors.
-
-
-Multiple computes test
-----------------------
-
-
-ID
-##
-
-manila_two_computes
-
-
-Description
-###########
-
-Deploy a cluster with  at least two Compute nodes.
-
-Complexity
-##########
-
-core
-
-
-Steps
-#####
-
-    1. Upload plugins and install.
-    2. Create environment with at least 2 Computes, 1 controller, 1 Cinder,
-       1 Manila-share and 1 Manila-data roles.
-    3. Deploy cluster with plugin.
-    4. Run OSTF.
-    5. Verify Manila service basic functionality (share create/mount).
-
-Expected results
-################
-
-All steps must be completed successfully, without any errors.
-
-
-Multiple cinder nodes test
---------------------------
-
-
-ID
-##
-
-manila_two_cinders
-
-
-Description
-###########
-
-Deploy a cluster with Manila Plugin and at least two nodes with cinder role.
-
-Complexity
-##########
-
-core
-
-
-Steps
-#####
-
-    1. Upload plugins and install.
-    2. Create environment with at least 2 Computes, 1 controller, 1 Cinder,
-       1 Manila-share and 1 Manila-data roles.
-    3. Deploy cluster with plugin.
-    4. Run OSTF.
-    5. Verify Manila service basic functionality (share create/mount).
-
-Expected results
-################
-
-All steps must be completed successfully, without any errors.
-
-
 Multiple manila share nodes test
 --------------------------------
 
@@ -139,8 +28,7 @@ Steps
 #####
 
     1. Upload plugins and install.
-    2. Create environment with at least 2 Manila-share , 1 controller,
-       1 Cinder, 1 Compute and 1 Manila-data roles.
+    2. Create environment with at least 2 Manila-share and 1 Manila-data roles.
     3. Deploy cluster with plugin.
     4. Run OSTF.
     5. Verify Manila service basic functionality (share create/mount).
@@ -176,8 +64,7 @@ Steps
 #####
 
     1. Upload plugins and install.
-    2. Create environment with at least 2 Manila-data , 1 controller,
-       1 Cinder, 1 Compute and 1 Manila-share roles.
+    2. Create environment with at least 2 Manila-data and 1 Manila-share roles.
     3. Deploy cluster with plugin.
     4. Run OSTF.
     5. Verify Manila service basic functionality (share create/mount)
@@ -186,6 +73,10 @@ Expected results
 ################
 
 All steps must be completed successfully, without any errors.
+
+
+Both Cinder and Ceph test
+-------------------------
 
 
 ID
@@ -197,7 +88,8 @@ manila_both_cinder_ceph
 Description
 ###########
 
-Deploy a cluster using Ceph as a backend for block storage and cinder for other (image, object and ephemeral).
+Deploy a cluster using Ceph as a backend for block storage and cinder for 
+other (image, object and ephemeral).
 
 Complexity
 ##########
@@ -209,42 +101,9 @@ Steps
 #####
 
     1. Upload plugins and install.
-    2. Set Ceph as a backend for block storage
-    3. Create environment with at least 1 Manila-data, 1 controller,
-       1 Cinder, 1 Compute 1 Manila-share and 3 Ceph-OSD roles.
-    4. Deploy cluster with plugin.
-    5. Run OSTF.
-    6. Verify Manila service basic functionality (share create/mount)
-
-Expected results
-################
-
-All steps must be completed successfully, without any errors.
-
-ID
-##
-
-manila_all_ceph
-
-
-Description
-###########
-
-Deploy a cluster with using Ceph as a backend for all storages.
-
-Complexity
-##########
-
-core
-
-
-Steps
-#####
-
-    1. Upload plugins and install.
-    2. Set Ceph as a backend for all type of storages
-    3. Create environment with at least 1 Manila-data, 1 controller, 1 Compute
-       1 Manila-share and 3 Ceph-OSD roles.
+    2. Set Ceph as a backend for block storage.
+    3. Create environment with at least 1 Manila-data 1 Manila-share 1 Cinder
+       and 3 Ceph-OSD.
     4. Deploy cluster with plugin.
     5. Run OSTF.
     6. Verify Manila service basic functionality (share create/mount).
@@ -253,6 +112,11 @@ Expected results
 ################
 
 All steps must be completed successfully, without any errors.
+
+
+Ceilometer enabled test
+-----------------------
+
 
 ID
 ##
@@ -276,8 +140,8 @@ Steps
 
     1. Upload plugins and install.
     2. Create environment with enabled component Ceilometer.
-    3. Configure nodes: at least 1 Manila-data, 1 controller, 1 Compute
-       1 Manila-share and 3 Ceph-OSD roles.
+    3. Configure nodes with at least 3 Mongo-DB 1 Manila-data and
+       1 Manila-share roles.
     4. Deploy cluster with plugin.
     5. Run OSTF.
     6. Verify Manila service basic functionality (share create/mount).
@@ -286,6 +150,10 @@ Expected results
 ################
 
 All steps must be completed successfully, without any errors.
+
+
+Murano enabled test
+-------------------
 
 
 ID
@@ -310,8 +178,7 @@ Steps
 
     1. Upload plugins and install.
     2. Create environment with enabled component Murano.
-    3. Configure nodes: at least 1 Manila-data, 1 controller, 1 Compute
-       1 Manila-share and 3 Ceph-OSD roles.
+    3. Configure nodes with at least 1 Manila-data and 1 Manila-share.
     4. Deploy cluster with plugin.
     5. Run OSTF.
     6. Verify Manila service basic functionality (share create/mount).
@@ -320,6 +187,10 @@ Expected results
 ################
 
 All steps must be completed successfully, without any errors.
+
+
+Sahara enabled test
+-------------------
 
 
 ID
@@ -344,8 +215,7 @@ Steps
 
     1. Upload plugins and install.
     2. Create environment with enabled component Sahara.
-    3. Configure nodes: at least 1 Manila-data, 1 controller, 1 Compute
-       1 Manila-share and 3 Ceph-OSD roles.
+    3. Configure nodes: at least 1 Manila-data 1 Manila-share.
     4. Deploy cluster with plugin.
     5. Run OSTF.
     6. Verify Manila service basic functionality (share create/mount).

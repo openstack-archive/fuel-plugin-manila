@@ -51,6 +51,7 @@ class CloseSSHConnectionsPlugin(Plugin):
 def import_tests():
     """Import test suite of project."""
     from tests import test_smoke_bvt  # noqa
+    from tests import test_integration  # noqa
 
 
 def run_tests():
