@@ -28,9 +28,19 @@ attributes:
     label: 'Use the NetApp driver'
     description: 'Use the NetApp onTap storage as a backend for manila shares'
 
-  netapp-host:
+  netapp-proto:
     type: 'text'
     weight: 31
+    value: '443'
+    label: 'NetApp transport type'
+    description: 'Transport protocol for communicating with the storage system'
+    restrictions:
+      - condition: "settings:fuel-plugin-manila.use-netapp-driver.value != true"
+        action: hide
+
+  netapp-host:
+    type: 'text'
+    weight: 32
     label: 'NetApp server hostname'
     description: 'Set the address, port and protocol for to the server access'
     value: ""
@@ -38,9 +48,18 @@ attributes:
       - condition: "settings:fuel-plugin-manila.use-netapp-driver.value != true"
         action: hide
 
+  netapp-port:
+    type: 'text'
+    weight: 33
+    value: 'http'
+    label: 'NetApp server port'
+    restrictions:
+      - condition: "settings:fuel-plugin-manila.use-netapp-driver.value != true"
+        action: hide
+
   netapp-user:
     type: 'text'
-    weight: 32
+    weight: 34
     label: 'NetApp server username'
     description: 'Set the username for to the server access'
     value: ""
@@ -49,7 +68,7 @@ attributes:
         action: hide
   netapp-pass:
     type: 'text'
-    weight: 33
+    weight: 35
     label: 'NetApp server password'
     description: 'Set the password for to the server access'
     value: ""
@@ -59,7 +78,7 @@ attributes:
 
   netapp-root_volume_aggregate:
     type: 'text'
-    weight: 34
+    weight: 36
     label: 'NetApp root volume aggregate'
     description: 'Set the parameter netapp_root_volume_aggregate'
     value: 'aggr1'
@@ -69,7 +88,7 @@ attributes:
 
   netapp-aggregate_name_search_pattern:
     type: 'text'
-    weight: 35
+    weight: 37
     label: 'NetApp search pattern for aggregation names'
     description: 'Set the parameter netapp_aggregate_name_search_pattern'
     value: '^((?!aggr0).)*$'
@@ -79,7 +98,7 @@ attributes:
 
   netapp-port_name_search_pattern:
     type: 'text'
-    weight: 35
+    weight: 38
     label: 'NetApp search pattern for storage port names'
     description: 'Set the parameter netapp_port_name_search_pattern'
     value: '^(e0a)$'
