@@ -50,11 +50,23 @@ $use_syslog    = hiera('use_syslog')
 
 $public_ssl    = hiera_hash('public_ssl', {})
 
+$fuel_manila_hash = hiera_hash('fuel-plugin-manila', {})
+$use_generic      = $fuel_manila_hash['use-generic-driver']
+$use_netapp       = $fuel_manila_hash['use-netapp-driver']
 
+if $use_netapp and $use_generic {
+  $shared_backends = 'generic,cdotMultipleSVM'
+}
+elsif $use_netapp {
+  $shared_backends = 'cdotMultipleSVM'
+}
+else {
+  $shared_backends = 'generic'
+}
 
 class {'::manila_auxiliary':
   sql_connection      => $sql_conn,
-  shared_backends     => 'generic', #should be array of backends
+  shared_backends     => $shared_backends,
   amqp_durable_queues => 'False',
   rabbit_userid       => $amqp_user,
   rabbit_hosts        => $amqp_hosts,

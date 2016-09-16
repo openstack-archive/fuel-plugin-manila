@@ -17,22 +17,41 @@ notify {'MODULAR: fuel-plugin-manila/start_share': }
 $srv  = 'manila-share'
 $desc = 'manila-share service'
 
-$manila       = hiera_hash('manila', {})
-$image        = $manila['service_vm_image']['img_name']
-$share_driver = 'manila.share.drivers.generic.GenericShareDriver'
+$fuel_manila_hash = hiera_hash('fuel-plugin-manila', {})
+$manila           = hiera_hash('manila', {})
+$image            = $manila['service_vm_image']['img_name']
 
-$backends = {'generic' =>
-  {'share_backend_name'            => 'generic',
-    'driver_handles_share_servers' => 'true',
-    'share_driver'                 => $share_driver,
-    'service_instance_user'        => 'manila',
-    'service_instance_password'    => 'manila',
-    'service_image_name'           => $image,
-    'path_to_private_key'          => '/var/lib/astute/manila/manila',
-    'path_to_public_key'           => '/var/lib/astute/manila/manila.pub',
+
+if $fuel_manila_hash['use-generic-driver'] {
+  $generic_share_driver     = 'manila.share.drivers.generic.GenericShareDriver'
+  $generic_backends = {'generic' =>
+    {'share_backend_name'            => 'generic',
+      'driver_handles_share_servers' => 'true',
+      'share_driver'                 => $generic_share_driver,
+      'service_instance_user'        => 'manila',
+      'service_instance_password'    => 'manila',
+      'service_image_name'           => $image,
+      'path_to_private_key'          => '/var/lib/astute/manila/manila',
+      'path_to_public_key'           => '/var/lib/astute/manila/manila.pub',
+    }
   }
+  create_resources('::manila_auxiliary::backend::generic', $generic_backends)
 }
 
+if $fuel_manila_hash['use-netapp-driver'] {
+  $netapp_backends = {'cdotMultipleSVM' =>
+    {'netapp_transport_type'                => $fuel_manila_hash['netapp-proto'],
+     'netapp_server_hostname'               => $fuel_manila_hash['netapp-host'],
+     'netapp_server_port'                   => $fuel_manila_hash['netapp-port'],
+     'netapp_login'                         => $fuel_manila_hash['netapp-user'],
+     'netapp_password'                      => $fuel_manila_hash['netapp-pass'],
+     'netapp_root_volume_aggregate'         => $fuel_manila_hash['netapp-root_volume_aggregate'],
+     'netapp_port_name_search_pattern'      => $fuel_manila_hash['netapp-port_name_search_pattern'],
+     'netapp_aggregate_name_search_pattern' => $fuel_manila_hash['netapp_aggregate_name_search_pattern'],
+    }
+  }
+  create_resources('::manila_auxiliary::backend::netapp', $netapp_backends)
+}
 
 $inits = {
   'manila-share' => {
@@ -41,7 +60,7 @@ $inits = {
 }
 
 create_resources('::manila_auxiliary::initd', $inits)
-create_resources('::manila_auxiliary::backend::generic', $backends)
+
 
 service { 'manila-share':
   ensure    => 'running',
