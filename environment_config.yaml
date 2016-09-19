@@ -20,6 +20,9 @@ attributes:
     restrictions:
       - condition: "settings:fuel-plugin-manila.use-generic-driver.value != true"
         action: hide
+    regex:
+      source: &non_empty_image_name '\S'
+      error: "Empty image name"
 
   use-netapp-driver:
     type: 'checkbox'
@@ -47,6 +50,9 @@ attributes:
     restrictions:
       - condition: "settings:fuel-plugin-manila.use-netapp-driver.value != true"
         action: hide
+    regex:
+      source: &non_empty_netapp_host '\S'
+      error: "Empty hostname of NetApp server"
 
   netapp-port:
     type: 'text'
@@ -66,6 +72,10 @@ attributes:
     restrictions:
       - condition: "settings:fuel-plugin-manila.use-netapp-driver.value != true"
         action: hide
+    regex:
+      source: &non_empty_netapp_user '\S'
+      error: "Empty username"
+
   netapp-pass:
     type: 'text'
     weight: 35
@@ -75,6 +85,9 @@ attributes:
     restrictions:
       - condition: "settings:fuel-plugin-manila.use-netapp-driver.value != true"
         action: hide
+    regex:
+      source: &non_empty_netapp_pass '\S'
+      error: "Empty password"
 
   netapp-root_volume_aggregate:
     type: 'text'
