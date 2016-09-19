@@ -34,7 +34,7 @@ attributes:
   netapp-proto:
     type: 'text'
     weight: 31
-    value: '443'
+    value: 'https'
     label: 'NetApp transport type'
     description: 'Transport protocol for communicating with the storage system'
     restrictions:
@@ -57,7 +57,7 @@ attributes:
   netapp-port:
     type: 'text'
     weight: 33
-    value: 'http'
+    value: '443'
     label: 'NetApp server port'
     restrictions:
       - condition: "settings:fuel-plugin-manila.use-netapp-driver.value != true"
