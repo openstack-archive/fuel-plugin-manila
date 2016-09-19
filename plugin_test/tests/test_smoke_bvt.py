@@ -47,7 +47,7 @@ class ManilaTestClass(TestBasic):
             1. Upload plugins to the master node and install plugin.
             2. Ensure that plugin is installed successfully using cli,
                run command 'fuel plugins list'. Check name, version of plugin.
-            3.Create a new environment with following parameters:
+            3. Create a new environment with following parameters:
                 * Networking: Neutron with VLAN segmentation
                 * Storage: Cinder LVM
             4. Enable Manila plugin for new environment.
