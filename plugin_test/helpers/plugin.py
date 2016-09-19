@@ -23,8 +23,8 @@ from fuelweb_test import logger
 
 from proboscis.asserts import assert_true
 from settings import MANILA_IMAGE_PATH
-from settings import MANILA_IMAGE_DEST_PATH
 from settings import MANILA_PLUGIN_PATH
+from settings import MANILA_IMAGE_DEST_PATH
 from settings import plugin_name
 
 
@@ -67,13 +67,37 @@ def upload_manila_image(master_node_ip, image_dest_path=MANILA_IMAGE_DEST_PATH):
         return False
 
 
-def enable_plugin_manila(cluster_id, fuel_web_client):
+def enable_plugin_manila(cluster_id, fuel_web_client, driver='generic'):
     """Enable Manila plugin on cluster."""
     assert_true(
         fuel_web_client.check_plugin_exists(cluster_id, plugin_name),
         "Plugin couldn't be enabled. Check plugin version.")
     options = {'metadata/enabled': True}
     fuel_web_client.update_plugin_data(cluster_id, plugin_name, options)
+    if driver == 'generic':
+        enable_generic_driver(cluster_id, fuel_web_client)
+    if driver == 'nettapp':
+        enable_netapp_driver(cluster_id, fuel_web_client)
+    else:
+        logger.warn("Non of drivers wasn't enabled check plugin settings")
+
+
+def enable_generic_driver(cluster_id, fuel_web_client):
+    """Enable Generic driver for manila plugin"""
+    assert_true(
+        fuel_web_client.check_plugin_exists(cluster_id, plugin_name),
+        "Plugin settings couldn't be enabled. Check plugin version.")
+    options = {'use-generic-driver/value': True}
+    fuel_web_client.update_plugin_data(cluster_id, plugin_name, options)
+
+
+def enable_netapp_driver(cluster_id, fuel_web_client):
+        """Enable NetApp driver for manila plugin"""
+        assert_true(
+            fuel_web_client.check_plugin_exists(cluster_id, plugin_name),
+            "Plugin settings couldn't be enabled. Check plugin version.")
+        options = {'use-netapp-driver/value': True}
+        fuel_web_client.update_plugin_data(cluster_id, plugin_name, options)
 
 
 def disable_plugin_manila(cluster_id, fuel_web_client):
