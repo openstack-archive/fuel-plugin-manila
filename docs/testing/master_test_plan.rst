@@ -12,6 +12,10 @@ Table of contents
 6. Test lists:
      a) `Smoke and BVT tests`_
      b) `Integration tests`_
+     c) `Functional tests`_
+     d) `Failover tests`_
+     e) `System tests`_
+     f) `Graphical UI tests`_
 
 .. _Introduction:
 
@@ -198,3 +202,11 @@ executed tests and schedule their execution.
 .. include:: test_suite_smoke_bvt.rst
 .. _Integration tests:
 .. include:: test_suite_integration.rst
+.. _Functional tests:
+.. include:: test_suite_functional.rst
+.. _Failover tests:
+.. include:: test_suite_failover.rst
+.. _System tests:
+.. include:: test_suite_system.rst
+.. _Graphical UI tests:
+.. include:: test_suite_gui.rst
