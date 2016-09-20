@@ -192,7 +192,7 @@ class ManilaTestClass(TestBasic):
           groups=["manila_bvt"])
     @log_snapshot_after_test
     def manila_bvt(self):
-        """Check deployment with Manila plugin and one controller.
+        """Check deployment with Manila plugin and HA controller.
 
         Scenario:
             1. Install plugins to the master node + upload Manila_Image
@@ -201,11 +201,11 @@ class ManilaTestClass(TestBasic):
                 * Storage: Cinder Ceph
             3. Enable and configure Manila plugin.
             4. Add nodes with following roles:
-                * Controller + ceph-osd
-                * Controller + ceph-osd
-                * Controller + ceph-osd
-                * Manila-share + Manila-data
-                * Compute
+                * Controller + Ceph-osd
+                * Controller + Ceph-osd
+                * Controller + Ceph-osd
+                * Compute + Ceph-osd
+                * Ceph-osd + Manila-share + Manila-data
             5. Deploy the cluster.
             6. Run OSTF.
             7. Verify Manila service basic functionality (share create/mount).
@@ -220,16 +220,15 @@ class ManilaTestClass(TestBasic):
         self.show_step(2)
         cluster_id = self.fuel_web.create_cluster(
             name=self.__class__.__name__,
-            mode=DEPLOYMENT_MODE,
             settings={
-                "net_provider": 'neutron',
-                "net_segment_type": 'tun',
+                'net_provider': 'neutron',
+                'net_segment_type': 'tun',
+                'volumes_ceph': True,
                 'volumes_lvm': False,
-                'volume_ceph': True,
-                "image_ceph": True,
-                "ephemeral_ceph": True,
-                "objects_ceph": True,
-                    }
+                'ephemeral_ceph': True,
+                'objects_ceph': True,
+                'images_ceph': True
+            }
         )
 
         self.show_step(3)
@@ -241,8 +240,8 @@ class ManilaTestClass(TestBasic):
             {'slave-01': ['controller', 'ceph-osd'],
              'slave-02': ['controller', 'ceph-osd'],
              'slave-03': ['controller', 'ceph-osd'],
-             'slave-04': ['manila-share', 'manila-data'],
-             'slave-05': ['compute']
+             'slave-04': ['compute', 'ceph-osd'],
+             'slave-05': ['ceph-osd', 'manila-share', 'manila-data']
              }
         )
 
@@ -255,3 +254,4 @@ class ManilaTestClass(TestBasic):
 
         self.show_step(7)
         TestPluginCheck(self).verify_manila_functionality()
+
