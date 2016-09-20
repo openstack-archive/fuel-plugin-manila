@@ -224,3 +224,43 @@ Expected results
 ################
 
 All steps must be completed successfully, without any errors.
+
+
+Enabled driver and redeploy
+---------------------------
+
+
+ID
+##
+
+manila_enable_after_deploy
+
+
+Description
+###########
+
+Verify redeploy of cluster with enabled driver
+
+Complexity
+##########
+
+core
+
+
+Steps
+#####
+
+    1. Upload plugins and install.
+    2. Create environment with disabled manila plugin.
+    3. Deploy cluster.
+    4. Run OSTF.
+    5. Enable and configure plugin for deployed environment.
+    6. Configure nodes: at least 1 Manila-data 1 Manila-share.
+    7. Re-deploy cluster.
+    8. Verify Manila service basic functionality (share create/mount).
+    9. Run OSTF.
+
+Expected results
+################
+
+All steps must be completed successfully, without any errors.

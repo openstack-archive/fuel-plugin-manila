@@ -69,13 +69,14 @@ Steps
     1. Upload plugins and install.
     2. Create environment with "Neutron with VLAN segmentation" as
        a network configuration.
-    3. Add a node with Controller role.
-    4. Add a node with Compute + Cinder + Manila-share + Manila-data roles.
-    5. Add a node with Compute + Cinder
-    6. Enable plugin for new environment
-    7. Run network check
-    8. Deploy cluster with plugin.
-    9. Verify Manila service basic functionality (share add/mount).
+    3. Enable plugin.
+    4. Configure environment:
+        * Add a node with Controller + role.
+        * Add a node with Compute + Cinder + Manila-share + Manila-data roles.
+        * Add a node with Compute + Cinder roles.
+    5. Run network check
+    6. Deploy cluster with plugin.
+    7. Verify Manila service basic functionality (share add/mount)
 
 Expected results
 ################
@@ -96,7 +97,8 @@ manila_bvt
 Description
 ###########
 
-BVT test for manila plugin. Verify cluster and manila sevice functionality after deploy in HA mode.
+BVT test for manila plugin. Deploy cluster with 3 controller and install 
+Manila plugin.
 
 
 Complexity
@@ -107,16 +109,20 @@ core
 
 Steps
 #####
+
     1. Upload plugins and install.
-    2. Create environment with "Neutron with tunneling segmentation" as a network configuration and
-       Ceph as storage backends.
-    3. Enable plugin for new environment
-    4. Add 3 node with Controller + ceph-osd roles.
-    5. Add a node with Manila-share + Manila-data roles.
-    6. Add a node with Compute role.
-    7. Deploy cluster with plugin.
-    8. Run OSTF.
-    9. Verify Manila service basic functionality (share add/mount).
+    2. Create environment with "Neutron with tunneling segmentation" as
+       a network configuration.
+    3. Enable plugin.
+    4. Configure environment:
+        * Add a node with Controller + Ceph-OSD roles.
+        * Add a node with Controller + Ceph-OSD roles.
+        * Add a node with Controller + Ceph-OSD roles.
+        * Add a node with Compute + Ceph-OSD roles.
+        * Add a node with Ceph-osd + Manila-share + Manila-data roles.
+    5. Deploy cluster with plugin.
+    6. Run OSTF.
+    7. Verify Manila service basic functionality (share add/mount)
 
 Expected results
 ################
