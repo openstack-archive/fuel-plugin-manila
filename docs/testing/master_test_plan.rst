@@ -12,6 +12,10 @@ Table of contents
 6. Test lists:
      a) `Smoke and BVT tests`_
      b) `Integration tests`_
+     c) `Functional tests`_
+     d) `Failover tests`_
+     e) `System tests`_
+     f) `Graphical UI tests`_
 
 .. _Introduction:
 
@@ -162,7 +166,7 @@ in Overview of Planned Tests.
 
 5.1.3 Regression testing
 ------------------------
-Regression testing includes execution of a set of test cases for features 
+Regression testing includes execution of a set of test cases for features
 implemented before current iteration to ensure that following modifications of
 the system haven't introduced or uncovered software defects. It also includes
 verification of minor defect fixes introduced in the current iteration.
@@ -198,3 +202,11 @@ executed tests and schedule their execution.
 .. include:: test_suite_smoke_bvt.rst
 .. _Integration tests:
 .. include:: test_suite_integration.rst
+.. _Functional tests:
+.. include:: test_suite_functional.rst
+.. _Failover tests:
+.. include:: test_suite_failover.rst
+.. _System tests:
+.. include:: test_suite_system.rst
+.. _Graphical UI tests:
+.. include:: test_suite_gui.rst
