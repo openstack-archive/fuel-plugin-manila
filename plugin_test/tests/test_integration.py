@@ -140,4 +140,60 @@ class TestManilaIntegration(TestBasic):
         self.show_step(6)
         TestPluginCheck(self).verify_manila_functionality()
 
+    @test(depends_on=[SetupEnvironment.prepare_slaves_5],
+          groups=["manila_with_ceilometer"])
+    @log_snapshot_after_test
+    def manila_with_ceilometer(self):
+        """Deploy a cluster with additional component Ceilometer
 
+        Scenario:
+            1. Upload plugins and install.
+            2. Create environment :
+                * Networking: Neutron with tunneling segmentation
+                * Additional services: Ceilometer
+            3. Enable plugin and add nodes with following roles:
+                * Controller + Mongo-DB
+                * Mongo-DB + Manila-data + Manila-share
+                * Cinder + Mongo-DB
+                * Compute
+                * Compute
+            4. Deploy cluster with plugin.
+            5. Run OSTF
+            6. Verify Manila service basic functionality (share create/mount).
+
+        """
+
+        self.env.revert_snapshot("ready_with_5_slaves")
+        self.show_step(1)
+        plugin.install_manila_plugin(self.ssh_manager.admin_ip)
+        plugin.upload_manila_image(self.ssh_manager.admin_ip)
+
+        self.show_step(2)
+        cluster_id = self.fuel_web.create_cluster(
+            name=self.__class__.__name__,
+            settings={
+                'ceilometer': True
+            }
+        )
+
+        self.show_step(3)
+        plugin.enable_plugin_manila(cluster_id, self.fuel_web)
+        self.fuel_web.update_nodes(
+            cluster_id,
+            {'slave-01': ['controller', 'mongo'],
+             'slave-02': ['mongo', 'manila_data', 'manila-share'],
+             'slave-03': ['cinder', 'mongo'],
+             'slave-04': ['compute'],
+             'slave-05': ['compute']
+             }
+        )
+
+        self.show_step(4)
+        self.fuel_web.deploy_cluster_wait(cluster_id)
+
+        self.show_step(5)
+        self.fuel_web.run_ostf(cluster_id=cluster_id,
+                               timeout=60*60,
+                               test_sets=['smoke', 'sanity','tests_platform'])
+        self.show_step(6)
+        TestPluginCheck(self).verify_manila_functionality()
