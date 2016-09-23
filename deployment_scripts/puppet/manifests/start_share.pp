@@ -61,10 +61,11 @@ $inits = {
 
 create_resources('::manila_auxiliary::initd', $inits)
 
-
-service { 'manila-share':
-  ensure    => 'running',
-  name      => 'manila-share',
-  enable    => true,
-  hasstatus => true,
-}
+notify {'Restart manila-share':
+  }~>
+  service { 'manila-share':
+    ensure    => 'running',
+    name      => 'manila-share',
+    enable    => true,
+    hasstatus => true,
+  }
