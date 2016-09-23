@@ -12,28 +12,16 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-notify {'MODULAR: fuel-plugin-manila/start_controller': }
+notify {'MODULAR: fuel-plugin-manila/db-sync': }
 
-$inits = {
-  'manila-api' => {
-    desc => 'manila-api init script',
-    srv  => 'manila-api',},
-  'manila-scheduler' => {
-    desc => 'manila-scheduler init script',
-    srv  => 'manila-scheduler',},
+$manila  = hiera_hash('manila', {})
+$db_pass = $manila['db_password']
+$db_host = hiera('database_vip')
+$req     = 'select name from availability_zones\G'
+
+exec { 'manual_db_sync':
+  command => 'manila-manage db sync',
+  path    => '/usr/bin:/bin',
+  user    => 'manila',
+  unless  => "mysql -u manila -p${db_pass} -h ${db_host} -e \"${req}\" manila | grep nova"
 }
-
-create_resources('::manila_auxiliary::initd', $inits)
-
-service { 'manila-api':
-  ensure    => 'running',
-  name      => 'manila-api',
-  enable    => true,
-  hasstatus => true,
-  }->
-  service { 'manila-scheduler':
-    ensure    => 'running',
-    name      => 'manila-scheduler',
-    enable    => true,
-    hasstatus => true,
-  }
