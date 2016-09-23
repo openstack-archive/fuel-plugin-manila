@@ -1,15 +1,18 @@
 #!/bin/sh
 
 CLUSTER_ID=$1
+PLUGIN_YAML=/etc/fuel/cluster/$CLUSTER_ID/fuel-plugin-manila.yaml
 
-gen_pass() {
-     openssl rand -base64 32|tr -d '='
-}
+if [ ! -f $PLUGIN_YAML ]; then
 
-user_pass=$(gen_pass)
-maniladb_pass=$(gen_pass)
+    gen_pass() {
+	openssl rand -base64 32|tr -d '='
+    }
 
-echo "
+    user_pass=$(gen_pass)
+    maniladb_pass=$(gen_pass)
+
+    echo "
 ---
   manila:
     user_password: $user_pass
@@ -23,4 +26,5 @@ echo "
       min_ram: \"256\"
       os_name: ubuntu
       public: \"true\"
-" > /etc/fuel/cluster/$CLUSTER_ID/fuel-plugin-manila.yaml
+" > $PLUGIN_YAML
+fi

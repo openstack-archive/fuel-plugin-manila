@@ -4,7 +4,7 @@
 - id: manila-share
   type: group
   role: [manila-share]
-  tasks: [hiera, globals, setup_repositories, tools, logging, netconfig, firewall, hosts, ntp-client, dns-client, cgroups, deploy_start]
+  tasks: [hiera, globals, setup_repositories, tools, logging, netconfig, firewall, hosts, ntp-client, dns-client, cgroups, manila-hiera, deploy_start]
   required_for: [deploy_end]
   requires: [deploy_start, primary-controller]
   parameters:
@@ -16,7 +16,7 @@
 - id: manila-data
   type: group
   role: [manila-data]
-  tasks: [hiera, globals, setup_repositories, tools, logging, netconfig, firewall, hosts, ntp-client, dns-client, cgroups, deploy_start]
+  tasks: [hiera, globals, setup_repositories, tools, logging, netconfig, firewall, hosts, ntp-client, dns-client, cgroups, manila-hiera, deploy_start]
   required_for: [deploy_end]
   requires: [deploy_start, primary-controller]
   parameters:
@@ -32,7 +32,7 @@
   requires: [pre_deployment_start]
   required_for: [manila-copy_keys]
   parameters:
-    cmd: sh /etc/puppet/modules/osnailyfacter/modular/astute/generate_keys.sh -p /var/lib/fuel/keys/ -i {CLUSTER_ID} -s 'manila'
+    cmd: sh /var/www/nailgun/plugins/fuel-plugin-manila-1.0/gen_keys.sh {CLUSTER_ID}
     timeout: 180
 
 - id: manila-copy_keys
@@ -200,11 +200,24 @@
     puppet_modules: "puppet/modules:/etc/puppet/modules"
     timeout: 3600
 
+- id: manila-db-sync
+  type: puppet
+  groups: [primary-controller]
+  version: 2.1.0
+  requires: [manila-main, manila-db]
+  required_for: [manila-controller-start]
+  parameters:
+    puppet_manifest: "puppet/manifests/db-sync.pp"
+    puppet_modules: "puppet/modules:/etc/puppet/modules"
+    timeout: 3600
+
 - id: manila-controller-start
   type: puppet
   groups: [primary-controller, controller]
   version: 2.1.0
   requires: [manila-main]
+  cross-depends:
+    - name: manila-db-sync
   parameters:
     puppet_manifest: "puppet/manifests/start_controller.pp"
     puppet_modules: "puppet/modules:/etc/puppet/modules"
