@@ -30,10 +30,21 @@ package {'python-manila-ui':
 
 class {'::manila_auxiliary::fs': }
 
+file {'/etc/apt/preferences.d/fuel-plugin-manila.pref':
+  source => 'puppet:///modules/manila_auxiliary/fuel-plugin-manila.pref',
+  owner  => 'root',
+  group  => 'root'
+}
+
+class {'::apt::update': }
+
+
 Package['python-pip']->
 Package['python-dev']->
 Package['python-pymysql']->
 Package['pycrypto']->
+File['/etc/apt/preferences.d/fuel-plugin-manila.pref']->
+Class['::apt::update']->
 Package['python-manila']->
 Package['python-manilaclient']->
 Package['python-manila-ui']
