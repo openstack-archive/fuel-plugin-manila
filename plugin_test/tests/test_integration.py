@@ -165,8 +165,8 @@ class TestManilaIntegration(TestBasic):
 
         self.env.revert_snapshot("ready_with_5_slaves")
         self.show_step(1)
-        # plugin.install_manila_plugin(self.ssh_manager.admin_ip)
-        # plugin.upload_manila_image(self.ssh_manager.admin_ip)
+        plugin.install_manila_plugin(self.ssh_manager.admin_ip)
+        plugin.upload_manila_image(self.ssh_manager.admin_ip)
 
         self.show_step(2)
         cluster_id = self.fuel_web.create_cluster(
@@ -177,11 +177,11 @@ class TestManilaIntegration(TestBasic):
         )
 
         self.show_step(3)
-        # plugin.enable_plugin_manila(cluster_id, self.fuel_web)
+        plugin.enable_plugin_manila(cluster_id, self.fuel_web)
         self.fuel_web.update_nodes(
             cluster_id,
             {'slave-01': ['controller', 'mongo'],
-             #'slave-02': ['mongo', 'manila_data', 'manila-share'],
+             'slave-02': ['mongo', 'manila_data', 'manila-share'],
              'slave-02': ['mongo'],
              'slave-03': ['cinder', 'mongo'],
              'slave-04': ['compute'],
