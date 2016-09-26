@@ -16,35 +16,24 @@ package {'pycrypto':
   provider => 'pip',
 }
 
-package {'python-manila':
+package {'fuel-plugin-manila-manila-core':
   ensure => 'installed'
 }
 
-package {'python-manilaclient':
+package {'fuel-plugin-manila-manilaclient':
   ensure => 'installed'
 }
 
-package {'python-manila-ui':
+package {'fuel-plugin-manila-manila-ui':
   ensure => 'installed'
 }
 
 class {'::manila_auxiliary::fs': }
 
-file {'/etc/apt/preferences.d/fuel-plugin-manila.pref':
-  source => 'puppet:///modules/manila_auxiliary/fuel-plugin-manila.pref',
-  owner  => 'root',
-  group  => 'root'
-}
-
-class {'::apt::update': }
-
-
 Package['python-pip']->
 Package['python-dev']->
 Package['python-pymysql']->
 Package['pycrypto']->
-File['/etc/apt/preferences.d/fuel-plugin-manila.pref']->
-Class['::apt::update']->
-Package['python-manila']->
-Package['python-manilaclient']->
-Package['python-manila-ui']
+Package['fuel-plugin-manila-manila-core']->
+Package['fuel-plugin-manila-manilaclient']->
+Package['fuel-plugin-manila-manila-ui']

@@ -1,5 +1,0 @@
-# This file is managed by Puppet. DO NOT EDIT.
-Explanation: fuel-plugin-manila
-Package: *
-Pin: release a=fuel-plugin-manila, n=fuel-plugin-manila, o=Mirantis, l=fuel-plugin-manila
-Pin-Priority: 1250
