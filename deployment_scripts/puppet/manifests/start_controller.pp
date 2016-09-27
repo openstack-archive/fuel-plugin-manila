@@ -25,21 +25,19 @@ $inits = {
 
 create_resources('::manila_auxiliary::initd', $inits)
 
-exec { 'manual_db_sync':
-  command => 'manila-manage db sync',
-  path    => '/usr/bin',
-  user    => 'manila',
-  }->
-
+notify {'Restart manila-api':
+  }~>
   service { 'manila-api':
     ensure    => 'running',
     name      => 'manila-api',
     enable    => true,
     hasstatus => true,
     }->
-    service { 'manila-scheduler':
-      ensure    => 'running',
-      name      => 'manila-scheduler',
-      enable    => true,
-      hasstatus => true,
-    }
+    notify {' Restart manila-scheduler':
+      }~>
+      service { 'manila-scheduler':
+        ensure    => 'running',
+        name      => 'manila-scheduler',
+        enable    => true,
+        hasstatus => true,
+      }

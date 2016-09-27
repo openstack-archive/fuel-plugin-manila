@@ -12,22 +12,16 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-notify {'MODULAR: fuel-plugin-manila/start_data': }
+notify {'MODULAR: fuel-plugin-manila/db-sync': }
 
+$manila  = hiera_hash('manila', {})
+$db_pass = $manila['db_password']
+$db_host = hiera('database_vip')
+$req     = 'select name from availability_zones\G'
 
-$inits = {
-  'manila-data' => {
-    desc => 'manila-data init script',
-    srv  => 'manila-data',},
+exec { 'manual_db_sync':
+  command => 'manila-manage db sync',
+  path    => '/usr/bin:/bin',
+  user    => 'manila',
+  unless  => "mysql -u manila -p${db_pass} -h ${db_host} -e \"${req}\" manila | grep nova"
 }
-
-create_resources('::manila_auxiliary::initd', $inits)
-
-notify {'Restart manila-data':
-  }~>
-  service { 'manila-data':
-    ensure    => 'running',
-    name      => 'manila-data',
-    enable    => true,
-    hasstatus => true,
-  }
