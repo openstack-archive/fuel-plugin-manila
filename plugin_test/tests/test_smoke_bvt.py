@@ -163,7 +163,6 @@ class ManilaTestClass(TestBasic):
         self.show_step(2)
         cluster_id = self.fuel_web.create_cluster(
             name=self.__class__.__name__,
-            mode=DEPLOYMENT_MODE,
             settings={
                 "net_provider": 'neutron',
             }
@@ -183,7 +182,7 @@ class ManilaTestClass(TestBasic):
         self.fuel_web.verify_network(cluster_id)
 
         self.show_step(6)
-        self.fuel_web.deploy_cluster_wait(cluster_id)
+        self.fuel_web.deploy_cluster_wait(cluster_id,check_services=False)
 
         self.show_step(7)
         TestPluginCheck(self).verify_manila_functionality()
