@@ -75,7 +75,7 @@ class TestManilaIntegration(TestBasic):
         )
 
         self.show_step(4)
-        self.fuel_web.deploy_cluster_wait(cluster_id)
+        self.fuel_web.deploy_cluster_wait(cluster_id,check_services=False)
 
         self.show_step(5)
         self.fuel_web.run_ostf(cluster_id=cluster_id,
@@ -131,7 +131,7 @@ class TestManilaIntegration(TestBasic):
         )
 
         self.show_step(4)
-        self.fuel_web.deploy_cluster_wait(cluster_id)
+        self.fuel_web.deploy_cluster_wait(cluster_id,check_services=False)
 
         self.show_step(5)
         self.fuel_web.run_ostf(cluster_id=cluster_id,
@@ -190,7 +190,7 @@ class TestManilaIntegration(TestBasic):
         )
 
         self.show_step(4)
-        self.fuel_web.deploy_cluster_wait(cluster_id)
+        self.fuel_web.deploy_cluster_wait(cluster_id,check_services=False)
 
         self.show_step(5)
         self.fuel_web.run_ostf(cluster_id=cluster_id,
