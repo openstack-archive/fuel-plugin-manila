@@ -4,7 +4,7 @@ System tests
 
 
 NFS share with generic driver
-----------------------------------
+-----------------------------
 
 
 ID
@@ -16,7 +16,7 @@ manila_nfs_generic
 Description
 ###########
 
-Verify generic driver functionaity with NFS share type.
+Verify generic driver functionality with NFS share type.
 
 Complexity
 ##########
@@ -35,7 +35,6 @@ Steps
     5. Create configure and mount NFS share.
     6. Verify I/O to share according to configured ACL(IP).
 
-
 Expected results
 ################
 
@@ -43,7 +42,7 @@ All steps must be completed successfully, without any errors.
 
 
 CIFS share with generic driver
-----------------------------------
+------------------------------
 
 
 ID
@@ -55,7 +54,7 @@ manila_cifs_generic
 Description
 ###########
 
-Verify generic driver functionaity with CIFS share type.
+Verify generic driver functionality with CIFS share type.
 
 Complexity
 ##########
@@ -94,7 +93,7 @@ manila_nfs_netapp
 Description
 ###########
 
-Verify netapp driver functionaity with NFS share type.
+Verify netapp driver functionality with NFS share type.
 
 Complexity
 ##########
@@ -129,7 +128,7 @@ manila_cifs_netapp
 Description
 ###########
 
-Verify netapp driver functionaity with CIFS and NFS share types
+Verify netapp driver functionality with CIFS and NFS share types
 
 Complexity
 ##########
