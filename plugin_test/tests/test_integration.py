@@ -230,7 +230,11 @@ class TestManilaIntegration(TestBasic):
         self.show_step(2)
         cluster_id = self.fuel_web.create_cluster(
             name=self.__class__.__name__,
-            settings={'images_ceph': True}
+            settings={
+                "net_provider": 'neutron',
+                "net_segment_type": 'tun',
+                'images_ceph': True
+            }
         )
 
         self.show_step(3)
@@ -251,7 +255,74 @@ class TestManilaIntegration(TestBasic):
 
         self.show_step(5)
         self.fuel_web.run_ostf(cluster_id=cluster_id,
-                               test_sets=['smoke', 'sanity'])
+                               test_sets=['smoke', 'sanity', 'ha'])
 
         self.show_step(6)
         TestPluginCheck(self).verify_manila_functionality()
+
+    @test(depends_on=[SetupEnvironment.prepare_slaves_3],
+          groups=["manila_enable_after_deploy"])
+    @log_snapshot_after_test
+    def manila_enable_after_deploy(self):
+        """Check cluster deploy with Manila Plugin added after deploy.
+
+        Scenario:
+            1. Upload plugins and install.
+            2. Create environment :
+                * Networking: Neutron with VLAN segmentation
+                * Block Storage: LVM
+                * Other Storages: default
+                * Additional services: disabled
+            3. Disable plugin and add nodes with following roles:
+                * Controller
+                * Compute + Cinder
+            4. Deploy cluster without plugin.
+            5. Run OSTF
+            6. Enable plugin and add one more node
+                * Manila-share + Manila-data
+            7. Deploy cluster with plugin.
+            8. Run OSTF
+            9. Verify Manila service basic functionality (share create/mount).
+        """
+
+        self.env.revert_snapshot("ready_with_3_slaves")
+        self.show_step(1)
+        plugin.install_manila_plugin(self.ssh_manager.admin_ip)
+        plugin.upload_manila_image(self.ssh_manager.admin_ip)
+
+        self.show_step(2)
+        cluster_id = self.fuel_web.create_cluster(
+            name=self.__class__.__name__,
+            settings={}
+        )
+
+        self.show_step(3)
+        plugin.disable_plugin_manila(cluster_id, self.fuel_web)
+        self.fuel_web.update_nodes(
+            cluster_id,
+            {'slave-01': ['controller'],
+             'slave-02': ['compute', 'cinder']
+             }
+        )
+
+        self.show_step(4)
+        self.fuel_web.deploy_cluster_wait(cluster_id, check_services=False)
+
+        self.show_step(5)
+        self.fuel_web.run_ostf(cluster_id=cluster_id,
+                               test_sets=['smoke', 'sanity'])
+        self.show_step(6)
+        plugin.enable_plugin_manila(cluster_id, self.fuel_web)
+        self.fuel_web.update_nodes(
+            cluster_id,
+            {'slave-03': ['manila-share', 'manila-data']}
+        )
+        self.show_step(7)
+        self.fuel_web.deploy_cluster_wait(cluster_id, check_services=False)
+
+        self.show_step(8)
+        self.fuel_web.run_ostf(cluster_id=cluster_id,
+                               test_sets=['smoke', 'sanity'])
+        self.show_step(9)
+        TestPluginCheck(self).verify_manila_functionality()
+
