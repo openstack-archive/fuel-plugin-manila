@@ -52,6 +52,7 @@ def import_tests():
     """Import test suite of project."""
     from tests import test_smoke_bvt  # noqa
     from tests import test_integration  # noqa
+    from tests import test_functional  # noqa
 
 
 def run_tests():
