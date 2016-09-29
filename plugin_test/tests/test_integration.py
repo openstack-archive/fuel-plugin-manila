@@ -326,3 +326,58 @@ class TestManilaIntegration(TestBasic):
         self.show_step(9)
         TestPluginCheck(self).verify_manila_functionality()
 
+    @test(depends_on=[SetupEnvironment.prepare_slaves_3],
+          groups=["manila_with_murano"])
+    @log_snapshot_after_test
+    def manila_with_murano(self):
+        """Deploy a cluster with additional component Ceilometer
+
+        Scenario:
+            1. Upload plugins and install.
+            2. Create environment :
+                * Networking: Neutron with VLAN segmentation
+                * Additional services: Murano
+            3. Enable plugin and add nodes with following roles:
+                * Controller
+                * Compute + Manila-share
+                * Cinder + Manila-data
+            4. Deploy cluster with plugin.
+            5. Run OSTF
+            6. Verify Manila service basic functionality (share create/mount).
+
+        """
+
+        self.env.revert_snapshot("ready_with_3_slaves")
+        self.show_step(1)
+        plugin.install_manila_plugin(self.ssh_manager.admin_ip)
+        plugin.upload_manila_image(self.ssh_manager.admin_ip)
+
+        self.show_step(2)
+        cluster_id = self.fuel_web.create_cluster(
+            name=self.__class__.__name__,
+            settings={
+                'murano': True
+            }
+        )
+
+        self.show_step(3)
+        plugin.enable_plugin_manila(cluster_id, self.fuel_web)
+        self.fuel_web.update_nodes(
+            cluster_id,
+            {'slave-01': ['controller'],
+             'slave-02': ['compute', 'manila-share'],
+             'slave-03': ['cinder', 'manila-data']
+             }
+        )
+
+        self.show_step(4)
+        self.fuel_web.deploy_cluster_wait(cluster_id, check_services=False)
+
+        self.show_step(5)
+        self.fuel_web.run_ostf(cluster_id=cluster_id,
+                               test_sets=['smoke', 'sanity'])
+
+        self.show_step(6)
+        TestPluginCheck(self).verify_manila_functionality()
+
+
