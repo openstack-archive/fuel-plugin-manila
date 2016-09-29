@@ -69,12 +69,14 @@ Steps
     1. Upload plugins to the master node and install.
     2. Create a new environment.
     3. Check validation for setting Image name.
-    4. Check validation for setting NetApp server.
-    5. Check validation for setting NetApp username.
-    6. Check validation for setting NetApp password.
-    7. Check validation for setting NetApp volume aggregate.
-    8. Check validation for setting NetApp pattern for aggregation names.
-    9. Check validation for setting NetApp pattern for storage port names.
+    4. Check validation for setting NetApp server Hostname.
+    5. Check validation for setting NetApp transport type.
+    6. Check validation for setting NetApp server port.
+    7. Check validation for setting NetApp username.
+    8. Check validation for setting NetApp password.
+    9. Check validation for setting NetApp volume aggregate.
+    10. Check validation for setting NetApp pattern for aggregation names.
+    11. Check validation for setting NetApp pattern for storage port names.
 
 
 Expected results
