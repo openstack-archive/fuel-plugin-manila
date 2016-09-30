@@ -1,0 +1,8 @@
+Code-Review+2: okosse <okosse@mirantis.com>
+Workflow+1: okosse <okosse@mirantis.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 30 Sep 2016 13:00:26 +0000
+Reviewed-on: https://review.openstack.org/379533
+Project: openstack/fuel-plugin-manila
+Branch: refs/heads/master
