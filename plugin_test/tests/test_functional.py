@@ -517,7 +517,7 @@ class TestManilaFunctional(TestBasic):
             {'slave-01': ['controller', 'ceph-osd'],
              'slave-02': ['controller', 'ceph-osd'],
              'slave-03': ['controller', 'ceph-osd'],
-             'slave-04': ['ceph-osd', 'compute'],
+             'slave-04': ['ceph-osd', 'compute', 'manila-data', 'manila-share'],
              }
         )
 
