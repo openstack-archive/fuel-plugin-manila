@@ -3,6 +3,7 @@
 # Manila - Share
 - id: manila-share
   type: group
+  version: 2.1.0
   role: [manila-share]
   tasks: [hiera, globals, setup_repositories, tools, logging, netconfig, firewall, hosts, ntp-client, dns-client, cgroups, manila-hiera, deploy_start]
   required_for: [deploy_end]
@@ -15,6 +16,7 @@
 
 - id: manila-data
   type: group
+  version: 2.1.0
   role: [manila-data]
   tasks: [hiera, globals, setup_repositories, tools, logging, netconfig, firewall, hosts, ntp-client, dns-client, cgroups, manila-hiera, deploy_start]
   required_for: [deploy_end]
@@ -194,7 +196,7 @@
     - name: manila-db
   cross-depended-by:
     - name: deploy_end
-  requires: [manila-install, manila-haproxy]
+  requires: [manila-install, manila-haproxy, manila-hiera]
   parameters:
     puppet_manifest: "puppet/manifests/site.pp"
     puppet_modules: "puppet/modules:/etc/puppet/modules"
