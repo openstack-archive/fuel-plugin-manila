@@ -1,0 +1,8 @@
+Code-Review+2: Igor Gajsin <igajsin@mirantis.com>
+Workflow+1: Igor Gajsin <igajsin@mirantis.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Wed, 05 Oct 2016 14:17:00 +0000
+Reviewed-on: https://review.openstack.org/382446
+Project: openstack/fuel-plugin-manila
+Branch: refs/heads/master
