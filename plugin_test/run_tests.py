@@ -53,7 +53,7 @@ def import_tests():
     from tests import test_smoke_bvt  # noqa
     from tests import test_integration  # noqa
     from tests import test_functional  # noqa
-
+    from tests import test_failover  # noqa
 
 def run_tests():
     """Run test cases."""
