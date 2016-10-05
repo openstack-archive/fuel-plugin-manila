@@ -151,8 +151,9 @@ class ManilaActions(common.Common):
         """Waits for a share to reach a given status."""
 
         wait(lambda: self.get_share(share_name).status == status,
-             timeout=60 * 5, interval=5,
-             timeout_msg="Share didn't get status avaliable")
+             interval=5, timeout=60 * 10,
+             timeout_msg="Share didn't get status:{0}.Status is {1}".format(
+                 status, self.get_share(share_name).status))
 
     def add_acc_rule(self, share_id, acc_type='ip', rule=None, acc_level='rw'):
         """Add access rule for specific share"""
