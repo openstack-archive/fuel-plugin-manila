@@ -14,7 +14,6 @@
 
 from fuelweb_test.helpers import os_actions
 from fuelweb_test import logger
-from fuelweb_test import logwrap
 from fuelweb_test.settings import SERVTEST_PASSWORD
 from fuelweb_test.settings import SERVTEST_TENANT
 from fuelweb_test.settings import SERVTEST_USERNAME
@@ -24,7 +23,6 @@ from helpers import os_manila_actions
 from proboscis import asserts
 
 
-@logwrap
 class TestPluginCheck(object):
     """Test suite for GCS plugin check."""
 
