@@ -24,7 +24,7 @@ from helpers import os_manila_actions
 from proboscis import asserts
 
 
-@logwrap
+
 class TestPluginCheck(object):
     """Test suite for GCS plugin check."""
 
@@ -43,6 +43,7 @@ class TestPluginCheck(object):
         self.manila_conn = os_manila_actions.ManilaActions(
             ip, SERVTEST_USERNAME, SERVTEST_PASSWORD, SERVTEST_TENANT)
 
+    @logwrap
     def verify_share_mount(self, ssh_client, test_share):
         # create mounting point
         mounting_point = '/mnt/share1'
@@ -66,6 +67,7 @@ class TestPluginCheck(object):
             "R/W access for {0} verified".format(test_share.export_location))
         logger.info('#' * 10 + "Network share mounted and work as expected")
 
+    @logwrap
     def verify_manila_functionality(self):
         """This method do basic functionality check :
 
