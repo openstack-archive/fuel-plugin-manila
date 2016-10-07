@@ -12,12 +12,12 @@ package {'python-dev':
 }
 
 package {'pycrypto':
-  ensure => 'installed',
+  ensure   => 'installed',
   provider => 'pip',
 }
 
 package {'python-manilaclient':
-  ensure   => '1.11.90',
+  ensure   => '1.11.0',
   provider => 'pip',
 }
 
