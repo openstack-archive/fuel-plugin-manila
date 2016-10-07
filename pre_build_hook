@@ -24,9 +24,4 @@ git checkout -- requirements.txt;
 git checkout -- manila_ui/dashboards/project/shares/__init__.py
 cd ..
 
-sed -i s/'python-keystoneclient'/'#python-keystoneclient'/ python-manilaclient/requirements.txt
-sed -i s/'pycrypto'/'#pycrypto'/ python-manilaclient/requirements.txt
-build_deb 1.8.2 python-manilaclient fuel-plugin-manila-manilaclient
-cd python-manilaclient; git checkout -- requirements.txt; cd ..
-
 mv *.deb ../ubuntu
