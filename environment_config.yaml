@@ -32,9 +32,16 @@ attributes:
     description: 'Use the NetApp onTap storage as a backend for manila shares'
 
   netapp-proto:
-    type: 'text'
+    type: 'radio'
     weight: 31
     value: 'https'
+    values:
+      - data: 'https'
+        label: 'https'
+        description: 'Choose this protocol for encrypted connection'
+      - data: 'http'
+        label: 'http'
+        description: 'Choose this protocol for not encrypted connection'
     label: 'NetApp transport type'
     description: 'Transport protocol for communicating with the storage system'
     restrictions:
@@ -62,6 +69,9 @@ attributes:
     restrictions:
       - condition: "settings:fuel-plugin-manila.use-netapp-driver.value != true"
         action: hide
+    regex:
+      source: '^[0-9]*$'
+      error: "Network port should be a number"
 
   netapp-user:
     type: 'text'
