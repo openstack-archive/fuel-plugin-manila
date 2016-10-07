@@ -17,7 +17,7 @@ package {'pycrypto':
 }
 
 package {'python-manilaclient':
-  ensure   => '1.11.90',
+  ensure   => '1.11.0',
   provider => 'pip',
 }
 
