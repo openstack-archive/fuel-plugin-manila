@@ -358,7 +358,7 @@ class TestManilaFunctional(TestBasic):
         TestPluginCheck(self).verify_manila_functionality()
 
     @test(depends_on=[SetupEnvironment.prepare_slaves_5],
-          groups=["manila_del_add_сompute"])
+          groups=["manila_del_add_compute"])
     @log_snapshot_after_test
     def manila_del_add_comp(self):
         """Check deploy after compute node remove and add.
