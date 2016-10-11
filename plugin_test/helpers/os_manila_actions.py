@@ -20,7 +20,7 @@ from fuelweb_test.settings import VERIFY_SSL
 from keystoneauth1.session import Session as KeystoneSession
 from keystoneclient.auth.identity import v2
 from manilaclient.v2 import client
-
+from time import sleep
 
 class ManilaActions(common.Common):
     """Manila client class to operate with Manila API"""
@@ -129,7 +129,7 @@ class ManilaActions(common.Common):
                            public_share=True):
 
         """Create share"""
-
+	sleep(20)
         manila_client = client.Client('2', session=self.__keystone_ses)
         share = manila_client.shares.create(
             share_proto=protocol,
