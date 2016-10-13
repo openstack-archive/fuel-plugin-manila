@@ -10,3 +10,8 @@ if ! openstack --insecure flavor list | grep -q 'manila-service-flavor'; then
       --disk 0  \
       --vcpus 1
 fi
+
+if ! manila --insecure type-list | grep -q 'default_share_type'; then
+     echo 'add default_share_type'
+     manila type-create default_share_type True
+ fi
