@@ -35,7 +35,7 @@ manila-data processes should works on nodes with new roles --- manila-share
 and manila-date accordingly. Upload the service image into glance (if generic
 driver is enabled in that environment).
 
-::-
+::
                                    | Public       | ManagementPublic
                                    |              | Private
                                    |              | Storage
