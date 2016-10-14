@@ -13,5 +13,5 @@ fi
 
 if ! manila --insecure type-list | grep -q 'default_share_type'; then
      echo 'add default_share_type'
-     manila type-create default_share_type True
+     manila --insecure type-create default_share_type True
  fi
