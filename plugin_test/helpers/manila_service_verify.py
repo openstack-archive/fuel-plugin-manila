@@ -14,7 +14,6 @@
 
 from fuelweb_test.helpers import os_actions
 from fuelweb_test import logger
-from fuelweb_test import logwrap
 from fuelweb_test.settings import SERVTEST_PASSWORD
 from fuelweb_test.settings import SERVTEST_TENANT
 from fuelweb_test.settings import SERVTEST_USERNAME
@@ -24,11 +23,11 @@ from helpers import os_manila_actions
 from proboscis import asserts
 
 
-
 class TestPluginCheck(object):
     """Test suite for GCS plugin check."""
 
     def __init__(self, obj):
+        # type: (object) -> object
         """Create Test client for run tests.
 
         :param obj: Test case object
@@ -36,39 +35,48 @@ class TestPluginCheck(object):
 
         self.obj = obj
         cluster_id = self.obj.fuel_web.get_last_created_cluster()
+        logger.info('#' * 10 + "Cluster ID:  " + str(cluster_id))
         ip = self.obj.fuel_web.get_public_vip(cluster_id)
+        logger.info('#' * 10 + "IP :  " + str(ip))
+
         self.os_conn = os_actions.OpenStackActions(
             ip, SERVTEST_USERNAME, SERVTEST_PASSWORD, SERVTEST_TENANT)
 
         self.manila_conn = os_manila_actions.ManilaActions(
             ip, SERVTEST_USERNAME, SERVTEST_PASSWORD, SERVTEST_TENANT)
 
-    @logwrap
-    def verify_share_mount(self, ssh_client, test_share):
+    def verify_share_mount(self, ssh_client, test_share, share_prot):
         # create mounting point
+        logger.info('#' * 10 + "Testing share protocol is :  " + share_prot)
         mounting_point = '/mnt/share1'
         cmd = "sudo mkdir {0}".format(mounting_point)
+        logger.info('#' * 10 + "Executing :" + cmd)
         openstack.execute(ssh_client, cmd)
-
-        # mounting point
-        cmd2 = "sudo mount -t nfs {1} {0}".format(mounting_point,
-                                                  test_share.export_location)
-
+        # mounting share
+        cmd2 = "sudo mount -t " + share_prot + ' {1} {0}'.format(mounting_point,
+            test_share.export_location)
+        logger.info('#' * 10 + "Executing :" + cmd2)
         output_1 = openstack.execute(ssh_client, cmd2)
-        cmd3 = "echo Share is created > {0}/file.txt ".format(mounting_point)
-        openstack.execute(ssh_client, cmd3)
         asserts.assert_true(output_1['exit_code'] == 0,
                             message="Failed to mount network share")
-
+        # create file on share
+        cmd3 = "echo Share is created|sudo tee --append {0}/file.txt".\
+            format(mounting_point)
+        logger.info('#' * 10 + "Executing :" + cmd3)
+        output_1 = openstack.execute(ssh_client, cmd3)
+        asserts.assert_true(output_1['exit_code'] == 0,
+                            message="Failed to create file on network share")
+        # read created file
         cmd4 = "cat /mnt/share1/file.txt ".format(mounting_point)
+        logger.info('#' * 10 + "Executing :" + cmd4)
         output_2 = openstack.execute(ssh_client, cmd4)
         asserts.assert_true(
             'Share is created' in output_2['stdout'],
             "R/W access for {0} verified".format(test_share.export_location))
         logger.info('#' * 10 + "Network share mounted and work as expected")
 
-    @logwrap
-    def verify_manila_functionality(self):
+    def verify_manila_functionality(self, share_prot='nfs', clean_up=True,
+                                    backend='generic'):
         """This method do basic functionality check :
 
                * creates share-type, share network, share, access_rule ;
@@ -83,7 +91,12 @@ class TestPluginCheck(object):
             type_name='default_share_type')
         asserts.assert_equal(share_type.name, 'default_share_type',
                              message="Failed to create default share type")
+        self.manila_conn.set_share_type_extrascpecs(
+            share_type.name,
+            {'share_backend_name': backend}
+        )
 
+        logger.info('#'*10 + "share type id : " + str(share_type.id))
         # get internal id of admin_internal_net network and subnet id
         # neutron net-list | grep  'admin_internal_net'
         network = self.os_conn.get_network('admin_internal_net')
@@ -93,7 +106,8 @@ class TestPluginCheck(object):
         logger.info('#'*10 + "Create manila share network" + '#' * 10)
         s_net = self.manila_conn.create_share_network(
             net_id=network.get('id'), subnet_id=network.get('subnets'))
-        asserts.assert_equal(s_net.name, 'Test Share network',
+        logger.info('#' * 10 + "share type id : " + str(s_net.name))
+        asserts.assert_equal(s_net.name, 'test_share_network',
                              message="Failed to create manila share network")
 
         share_network_id = s_net.id
@@ -102,6 +116,7 @@ class TestPluginCheck(object):
         # create share and wait until it will becomes available
         logger.info('#'*10 + "Create manila share" + '#' * 10)
         test_share = self.manila_conn.create_basic_share(
+            protocol=share_prot,
             share_name='test_share', network=share_network_id)
         asserts.assert_equal(test_share.name, 'test_share',
                              message="Failed to create manila share")
@@ -113,7 +128,7 @@ class TestPluginCheck(object):
         self.manila_conn.add_acc_rule(share_id=test_share, rule='0.0.0.0/0')
 
         logger.info('#'*10 + "Create and configure instance to verify share")
-        test_instance = openstack.create_instance(self.os_conn)
+        test_instance, sec_group = openstack.create_instance(self.os_conn)
         openstack.verify_instance_state(self.os_conn, 'test_share_server')
 
         logger.info('#'*10 + "Assign floating ip for server")
@@ -127,4 +142,18 @@ class TestPluginCheck(object):
         msg = 'New instance started floating ip is: {0}'.format(fl_ip)
         logger.info(msg)
 
-        self.verify_share_mount(ssh_client, test_share)
+        self.verify_share_mount(ssh_client, test_share, share_prot)
+
+        if clean_up:
+            logger.info('#'*10 + "Cleanup test objects" + '#'*10)
+            logger.info('#' * 10 + "Delete test instance")
+            openstack.delete_instance(self.os_conn, test_instance)
+            logger.info('#' * 10 + "Delete test security group")
+            openstack.delete_sec_group(self.os_conn, sec_group.id)
+
+            logger.info('#' * 10 + "Delete test share")
+            self.manila_conn.delete_all_shares()
+            logger.info('#' * 10 + "Delete test share network")
+            self.manila_conn.delete_all_share_networks()
+            logger.info('#' * 10 + "Delete test share type ")
+            self.manila_conn.delete_all_share_types()

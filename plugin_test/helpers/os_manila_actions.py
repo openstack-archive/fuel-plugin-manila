@@ -22,6 +22,7 @@ from keystoneclient.auth.identity import v2
 from manilaclient.v2 import client
 from time import sleep
 
+
 class ManilaActions(common.Common):
     """Manila client class to operate with Manila API"""
 
@@ -60,11 +61,11 @@ class ManilaActions(common.Common):
     def create_share_network(self,
                              net_id=None,
                              subnet_id=None,
-                             name='Test Share network',
+                             name='test_share_network',
                              description='For testing purpose'
                              ):
         """Create share network"""
-
+        sleep(10)
         if self.get_share_network(name) is None:
             manila_client = client.Client('2', session=self.__keystone_ses)
             share_network = manila_client.share_networks.create(
@@ -100,9 +101,11 @@ class ManilaActions(common.Common):
     def create_share_type(self, type_name='Test_share_type',
                           handle_serv=True,
                           snap_sup=True,
-                          public_share=True):
+                          public_share=True
+                          ):
 
         """Create share type"""
+        sleep(10)
         if self.get_share_type(type_name) is None:
             manila_client = client.Client('2', session=self.__keystone_ses)
             manila_client.share_types.create(
@@ -121,7 +124,12 @@ class ManilaActions(common.Common):
                 return share
         return None
 
-    def create_basic_share(self, protocol='NFS',
+    def set_share_type_extrascpecs(self, share_type, extra_specs):
+        """set extra specs for share type"""
+        share_type = self.get_share_type(share_type)
+        share_type.set_keys(extra_specs)
+
+    def create_basic_share(self, protocol='nfs',
                            size=1,
                            share_name='Default_test_share',
                            share_type='default_share_type',
@@ -129,7 +137,7 @@ class ManilaActions(common.Common):
                            public_share=True):
 
         """Create share"""
-	sleep(20)
+        sleep(10)
         manila_client = client.Client('2', session=self.__keystone_ses)
         share = manila_client.shares.create(
             share_proto=protocol,
@@ -163,3 +171,44 @@ class ManilaActions(common.Common):
                                    access=rule,  access_level=acc_level)
         return manila_client.shares.access_list(share_id)
 
+    def delete_share(self, share):
+        manila_client = client.Client('2', session=self.__keystone_ses)
+        s = self.get_share(share)
+        print(s)
+        manila_client.shares.delete(share)
+        wait(lambda: self.get_shares_list() is None,
+             timeout=60, interval=5,
+             timeout_msg="Shares didn't deleted")
+
+    def delete_share_network(self, net_id):
+        manila_client = client.Client('2', session=self.__keystone_ses)
+        manila_client.share_networks.delete(net_id)
+
+    def delete_share_type(self, type_id):
+        manila_client = client.Client('2', session=self.__keystone_ses)
+        manila_client.share_types.delete(type_id)
+
+    def delete_all_shares(self):
+        manila_client = client.Client('2', session=self.__keystone_ses)
+        for shares in manila_client.shares.list():
+            manila_client.shares.delete(shares.id)
+        wait(lambda: manila_client.shares.list() == [],
+             timeout=120, interval=5,
+             timeout_msg="all shares didn't deleted {0}".format(
+                 manila_client.share_networks.list()))
+
+    def delete_all_share_networks(self):
+        manila_client = client.Client('2', session=self.__keystone_ses)
+        for network in manila_client.share_networks.list():
+            manila_client.share_networks.delete(network.id)
+        wait(lambda: manila_client.share_networks.list() == [],
+             timeout=120, interval=5,
+             timeout_msg="all networks didn't deleted")
+
+    def delete_all_share_types(self):
+        manila_client = client.Client('2', session=self.__keystone_ses)
+        for type in manila_client.share_types.list():
+            manila_client.share_types.delete(type.id)
+        wait(lambda: manila_client.share_types.list() == [],
+             timeout=120, interval=5,
+             timeout_msg="All share types didn't deleted")

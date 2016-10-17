@@ -55,7 +55,7 @@ def create_instance(os_conn,
                                    timeout=200,
                                    image=image_id
                                    )
-    return server
+    return server, sec_group
 
 
 def verify_instance_state(os_conn, inst_name, expected_state='ACTIVE'):
@@ -135,3 +135,29 @@ def execute(ssh_client, command):
     result['stdout'] = channel.recv(1024)
     result['stderr'] = channel.recv_stderr(1024)
     return result
+
+
+def delete_instance(os_conn, test_instance):
+    """Delete Instance"""
+
+    os_conn.delete_instance(test_instance)
+    wait(lambda: os_conn.is_srv_deleted(test_instance), timeout=200,
+         timeout_msg='Instance was not deleted.')
+
+
+def delete_sec_group(os_conn, sec_group):
+    """Delete security group"""
+    try:
+        os_conn.nova.security_groups.delete(sec_group)
+    except Exception as exc:
+        logger.info(
+            'Security group {0} was not deleted. {1}'.format(
+                sec_group, exc))
+
+
+def delete_float_ip(os_conn, ip):
+    """Delete Floating IP"""
+
+    os_conn.delete_instance(ip)
+    wait(lambda: os_conn.is_srv_deleted(ip), timeout=200,
+         timeout_msg='Floating IP was not deleted.')
