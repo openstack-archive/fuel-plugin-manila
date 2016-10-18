@@ -181,7 +181,7 @@ class TestManilaIntegration(TestBasic):
         self.fuel_web.update_nodes(
             cluster_id,
             {'slave-01': ['controller', 'mongo'],
-             'slave-02': ['mongo', 'manila_data', 'manila-share'],
+             'slave-02': ['mongo', 'manila-data', 'manila-share'],
              'slave-03': ['cinder', 'mongo'],
              'slave-04': ['compute'],
              'slave-05': ['compute']
