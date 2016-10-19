@@ -26,4 +26,6 @@ Use Manila plugin for Fuel
 .. toctree::
    :maxdepth: 1
 
+   using_manila
+   troubleshooting
    appendix
