@@ -5,7 +5,16 @@
 # - https://specs.openstack.org/openstack/fuel-specs/specs/8.0/component-registry.html
 
 - name: additional_service:fuel-plugin-manila
-  compatible: []
+  compatible:
+    - name: "hypervisor:qemu"
+    - name: "storage:block:ceph"
+    - name: "storage:ephemeral:ceph"
+    - name: "storage:block:lvm"
+    - name: "storage:image:ceph"
+    - name: "storage:object:ceph"
+    - name: "additional_service:ceilometer"
+    - name: "additional_service:sahara"
+    - name: "additional_service:murano"
   requires: []
   incompatible: []
   label: "Install Manila"
