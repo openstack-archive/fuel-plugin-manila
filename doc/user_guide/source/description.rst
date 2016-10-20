@@ -64,3 +64,6 @@ The Manila plugin for Fuel 9.1 has some known issues/limitations of usage:
 
 * Manila services uses publicURL instead of internalURL
   https://bugs.launchpad.net/fuel-plugin-manila/+bug/1633456
+
+* Manila share created from snapshot has error status (Generic)
+  https://bugs.launchpad.net/fuel-plugin-manila/+bug/1634818
