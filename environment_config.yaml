@@ -29,7 +29,7 @@ attributes:
     weight: 30
     value: false
     label: 'Use the NetApp driver'
-    description: 'Use the NetApp onTap storage as a backend for manila shares'
+    description: 'Use the NetApp ONTAP storage as a backend for manila shares'
 
   netapp-proto:
     type: 'radio'
