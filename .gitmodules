@@ -1,20 +1,20 @@
 [submodule "deployment_scripts/puppet/modules/manila"]
 	path = deployment_scripts/puppet/modules/manila
-	url = https://github.com/openstack/puppet-manila.git
+	url = http://git.openstack.org/openstack/puppet-manila.git
 	branch = stable/mitaka
 [submodule "repositories/python/manila-ui"]
 	path = repositories/python/manila-ui
-	url = https://github.com/openstack/manila-ui.git
+	url = http://git.openstack.org/openstack/manila-ui.git
 	branch = stable/mitaka
 [submodule "repositories/python/python-manilaclient"]
 	path = repositories/python/python-manilaclient
-	url = https://github.com/openstack/python-manilaclient.git
+	url = http://git.openstack.org/openstack/python-manilaclient.git
 	branch = stable/mitaka
 [submodule "repositories/python/manila"]
 	path = repositories/python/manila
-	url = https://github.com/openstack/manila.git
+	url = http://git.openstack.org/openstack/manila.git
 	branch = stable/mitaka
 [submodule "plugin_test/fuel-qa"]
 	path = plugin_test/fuel-qa
-	url = https://github.com/openstack/fuel-qa.git
+	url = http://git.openstack.org/openstack/fuel-qa.git
 	branch = stable/mitaka
