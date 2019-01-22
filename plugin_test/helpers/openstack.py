@@ -107,7 +107,7 @@ def get_ssh_connection(ip, username='manila', user_password='manila',
     """
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     wait(lambda: sock.connect_ex((ip, port)) == 0, timeout=60 * 5, interval=5)
-    logger.info('#' * 10 + "ssh is avaliable on server")
+    logger.info('#' * 10 + "ssh is available on server")
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(
