@@ -1,8 +1,0 @@
-.tox
-.build
-*.pyc
-*.rpm
-*.deb
-.#*
-\#*
-*~
